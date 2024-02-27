@@ -1,6 +1,7 @@
 {
   "cmp-nvim-lsp": { "branch": "main", "commit": "5af77f54de1b16c34b23cba810150689a3a90312" },
   "corn.nvim": { "branch": "master", "commit": "b0b86d11e0da93aa8554d4031faace8096c95e36" },
+  "git-blame.nvim": { "branch": "master", "commit": "ed84c1cfc49828a917af52bd92cac882851eca25" },
   "lazy.nvim": { "branch": "main", "commit": "0d61488b89a570415177f75a36ef93616aac6c77" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "4f1c72767bec31397d59554f84096909b2887195" },
   "mason.nvim": { "branch": "main", "commit": "5ad3e113b0c3fde3caba8630599373046f6197e8" },

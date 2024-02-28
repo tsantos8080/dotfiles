@@ -5,6 +5,8 @@ return {
     'neovim/nvim-lspconfig',
     'hrsh7th/nvim-cmp',
     'hrsh7th/cmp-nvim-lsp',
+    'SirVer/ultisnips',
+    'quangnguyen30192/cmp-nvim-ultisnips',
   },
   lazy = false,
   config = function()
@@ -24,6 +26,11 @@ return {
     
     local cmp = require('cmp')
     cmp.setup({
+      snippet = {
+        expand = function(args)
+          vim.fn["UltiSnips#Anon"](args.body)
+        end,
+      },
       mapping = cmp.mapping.preset.insert({
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -31,7 +38,7 @@ return {
         ['<C-e>'] = cmp.mapping.abort(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
       }),
-      sources = cmp.config.sources({{ name = 'nvim_lsp' }}, {{ name = 'buffer' }}),
+      sources = cmp.config.sources({{ name = 'nvim_lsp' }}, {{ name = 'buffer' }}, {{ name = 'ultisnips' }}),
     })
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -46,6 +53,11 @@ return {
       on_attach = on_attach,
       capabilities = capabilities,
     })
-
-  end
+  end,
+  init = function()
+    vim.cmd [[
+      let g:UltiSnipsSnippetDirectories = ['~/.config/nvim/custom-snippets']
+      let g:UltiSnipsJumpForwardTrigger="<tab>"  
+    ]]
+  end,
 }

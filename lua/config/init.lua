@@ -16,4 +16,6 @@ vim.g.mapleader = " "
 vim.wo.relativenumber = true
 vim.wo.number = true
 
+vim.api.nvim_set_keymap('n', '<leader>r', ':lua require("scripts").run_test()<cr>', {})
+
 require("lazy").setup("plugins")

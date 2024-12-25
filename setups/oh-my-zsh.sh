@@ -9,7 +9,7 @@ else
 fi
 
 # Set zsh as default shell
-sudo chsh -s /bin/zsh
+sudo chsh -s /usr/bin/zsh
 
 # Plugins
 if [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then

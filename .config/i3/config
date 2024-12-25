@@ -208,7 +208,7 @@ exec --no-startup-id "setxkbmap -layout us -variant intl,br -variant ,thinkpad -
 exec --no-startup-id picom
 
 # Wallpaper
-exec --no-startup-id feh --bg-scale ${HOME}/Pictures/wallpaper.*
+exec --no-startup-id feh --bg-scale ${HOME}/dotfiles/wallpaper.*
 
 # Print
 bindsym Print exec flameshot gui

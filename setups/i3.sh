@@ -29,6 +29,9 @@ else
 	cd .config/i3blocks/scripts/memory2
 	make
 	cd ../../../..
+
+	# i3blocks mediaplayer dependency
+	sudo apt install -y playerctl
 fi
 
 if ls ~/.fonts/JetBrainsMonoNerdFont* > /dev/null 2>&1; then
@@ -40,8 +43,6 @@ else
 	unzip -o ${HOME}/.fonts/font.zip -d ${HOME}/.fonts
 	fc-cache -f -v
 fi
-
-
 
 # If picom is not installed
 if which picom > /dev/null 2>&1; then

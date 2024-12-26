@@ -1,0 +1,4 @@
+[tools]
+lazydocker = 'latest'
+lazygit = 'latest'
+php = '8.4'

@@ -192,8 +192,7 @@ bindsym $mod+Control+l resize shrink width 10 px or 10 ppt
 # finds out, if available)
 bar {
         # status_command i3status
-        # status_command i3blocks
-        status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
+        status_command i3blocks
 }
 
 # Keyboard language

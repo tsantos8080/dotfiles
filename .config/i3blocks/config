@@ -25,12 +25,11 @@
 # The top properties below are applied to every block, but can be overridden.
 # Each block command defaults to the script name to avoid boilerplate.
 # Change $SCRIPT_DIR to the location of your scripts!
-command=$SCRIPT_DIR/$BLOCK_NAME
+command=~/dotfiles/.config/i3blocks/scripts/$BLOCK_NAME/$BLOCK_NAME
 separator_block_width=15
 markup=none
 
 [mediaplayer]
-command=$SCRIPT_DIR/mediaplayer/mediaplayer
 instance=spotify
 interval=5
 label= 
@@ -43,7 +42,6 @@ label=
 # See the script for details.
 
 [volume]
-command=$SCRIPT_DIR/volume/volume
 label= 
 interval=1
 signal=10
@@ -54,7 +52,6 @@ signal=10
 # The type defaults to "mem" if the instance is not specified.
 
 [memory2]
-command=$SCRIPT_DIR/memory2/memory2
 label=
 interval=persist
 markup=pango
@@ -63,13 +60,11 @@ warning=70
 color_critical=#d9534f
 
 [memory]
-command=$SCRIPT_DIR/memory/memory
 instance=swap
 interval=10
 label=󰍛 
 
 [timer_and_stopwatch]
-command=$SCRIPT_DIR/timer_and_stopwatch/timer_and_stopwatch
 # the DEFAULT_MODE variable must be either timer or stopwatch
 format=json
 interval=1
@@ -87,7 +82,6 @@ NEUTRAL_COLOR=#000000
 #
 # The battery instance defaults to 0.
 [battery]
-command=$SCRIPT_DIR/battery/battery
 label=  
 interval=30
 

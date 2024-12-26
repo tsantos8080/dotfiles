@@ -208,7 +208,7 @@ exec --no-startup-id feh --bg-scale ${HOME}/dotfiles/wallpaper.*
 bindsym Print exec flameshot gui
 
 # Gaps
-gaps inner 10
+gaps inner 20
 
 # Borders
 for_window [class="^.*"] border pixel 1

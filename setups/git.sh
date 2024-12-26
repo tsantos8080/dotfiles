@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
 # Create symlinks
-rm -rf ~/.gitconfig
+mv -f ~/.gitconfig ~/.gitconfig.bak 2> /dev/null
 ln -sf ${PWD}/.gitconfig ~/.gitconfig
 

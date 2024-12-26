@@ -55,11 +55,11 @@ else
 fi
 
 # Create symlinks
-rm -rf ~/.config/i3
+mv -f ~/.config/i3 ~/.config/i3.bak 2> /dev/null
 ln -sf ${PWD}/.config/i3/ ~/.config/i3
 
-rm -rf ~/.config/i3blocks
+mv -f ~/.config/i3blocks ~/.config/i3blocks.bak 2> /dev/null
 ln -sf ${PWD}/.config/i3blocks/ ~/.config/i3blocks
 
-rm -rf ~/.config/picom
+mv -f ~/.config/picom ~/.config/picom.bak 2> /dev/null
 ln -sf ${PWD}/.config/picom/ ~/.config/picom

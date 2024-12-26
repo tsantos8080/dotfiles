@@ -7,6 +7,6 @@ else
 fi
 
 # Create symlinks
-rm -rf ~/.config/flameshot
+mv -f ~/.config/flameshot ~/.config/flameshot.bak 2> /dev/null
 ln -sf ${PWD}/.config/flameshot/ ~/.config/flameshot
 

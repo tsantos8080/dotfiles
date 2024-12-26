@@ -19,6 +19,6 @@ else
 fi
 
 # Create symlinks
-rm -rf ~/.config/.zshrc
+mv -f ~/.config/.zshrc ~/.config/.zshrc.bak 2> /dev/null
 ln -sf ${PWD}/.zshrc ~/.zshrc
 

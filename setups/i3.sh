@@ -25,13 +25,6 @@ else
 	sudo make install
 	sudo rm -rf /tmp/i3blocks
 
-	# Setup i3blocks scripts
-	git clone https://github.com/vivien/i3blocks-contrib.git ./.config/i3blocks/scripts
-
-	cd .config/i3blocks/scripts/memory2
-	make
-	cd ../../../..
-
 	# i3blocks mediaplayer dependency
 	sudo apt install -y playerctl
 fi

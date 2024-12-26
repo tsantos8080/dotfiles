@@ -210,8 +210,9 @@ bindsym Print exec flameshot gui
 # Gaps
 gaps inner 10
 
-# No title bar
-for_window [class="^.*"] border pixel 0
+# Borders
+for_window [class="^.*"] border pixel 1
+hide_edge_borders smart
 
 # Toggle workspace
 bindsym $mod+Tab workspace next

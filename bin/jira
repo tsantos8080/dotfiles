@@ -1,0 +1,18 @@
+#!/usr/bin/zsh
+
+if [ $(git rev-parse --is-inside-work-tree) != 'true' ]; then
+	exit 1
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+id=$(echo $branch | cut -d'-' -f1-2)
+
+if ! [[ $id =~ ^[A-Z]+-[0-9]+$ ]]; then
+	echo "Invalid branch format. Please use the format 'TASK-123'."
+		exit 1
+fi
+
+url="https://melhorenvio.atlassian.net/browse/$id"
+
+xdg-open $url > /dev/null 2>&1 &
+

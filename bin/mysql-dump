@@ -1,0 +1,305 @@
+#!/usr/bin/env bash
+
+# Output colors
+green='\e[1;32m'
+red='\e[1;31m'
+white='\e[0;37m'
+yellow='\e[1;33m'
+
+# Print usage message
+usage() {
+    local program_name
+    program_name=${0##*/}
+    cat <<EOF
+Usage: $program_name [options]
+
+Options:
+    --help          Show this message
+    --list          List existing dumps
+    --suffix        Add a custom suffix to the dump file name
+    --container     Specify MySQL container name
+    --database      Specify database name
+    
+Example:
+    $program_name --database=mydatabase --suffix="pre-deploy" --container="my-mysql"
+EOF
+}
+
+# Get MySQL credentials
+get_credentials() {
+    # Ask for username
+    read -p "Enter root MySQL username: " DB_USERNAME
+    
+    # Ask for password (hidden input)
+    read -s -p "Enter root MySQL password: " DB_PASSWORD
+    echo # New line after password input
+    
+    # Validate input
+    if [ -z "$DB_USERNAME" ] || [ -z "$DB_PASSWORD" ]; then
+        echo -e "${red}Error: Username and password cannot be empty${white}"
+        exit 1
+    fi
+}
+
+# List and select MySQL container
+select_mysql_container() {
+    local specified_container="$1"
+    local containers
+    local container_count
+    
+    # If container was specified, verify if it exists
+    if [ -n "$specified_container" ]; then
+        if docker ps --format '{{.Names}}' | grep -q "^${specified_container}$"; then
+            MYSQL_CONTAINER="$specified_container"
+            echo -e "${green}Using MySQL container: $MYSQL_CONTAINER${white}"
+            return 0
+        else
+            echo -e "${red}Error: Container '$specified_container' not found${white}"
+            exit 1
+        fi
+    fi
+
+    # Get all running containers that expose port 3306 (MySQL default port)
+    containers=($(docker ps --format '{{.Names}}' --filter "expose=3306"))
+    container_count=${#containers[@]}
+
+    # No MySQL containers found
+    if [ $container_count -eq 0 ]; then
+        echo -e "${red}Error: No MySQL containers found${white}"
+        exit 1
+    fi
+
+    # If only one container found, use it
+    if [ $container_count -eq 1 ]; then
+        MYSQL_CONTAINER=${containers[0]}
+        echo -e "${green}Using MySQL container: $MYSQL_CONTAINER${white}"
+        return 0
+    fi
+
+    # Multiple containers found, let user choose
+    echo -e "${yellow}Multiple MySQL containers found. Please select one:${white}"
+    select container in "${containers[@]}"; do
+        if [ -n "$container" ]; then
+            MYSQL_CONTAINER="$container"
+            echo -e "${green}Selected container: $MYSQL_CONTAINER${white}"
+            return 0
+        else
+            echo -e "${red}Invalid selection${white}"
+        fi
+    done
+}
+
+# List and select database
+select_database() {
+    local specified_database="$1"
+    local databases
+    
+    # If database was specified, use it
+    if [ -n "$specified_database" ]; then
+        DATABASE="$specified_database"
+        echo -e "${green}Using database: $DATABASE${white}"
+        return 0
+    fi
+
+    # Get list of databases
+    databases=($(docker exec $MYSQL_CONTAINER mysql -u "$DB_USERNAME" --password="$DB_PASSWORD" -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|mysql|sys)"))
+    
+    if [ ${#databases[@]} -eq 0 ]; then
+        echo -e "${red}Error: No databases found${white}"
+        exit 1
+    fi
+
+    # Let user choose database
+    echo -e "${yellow}Available databases:${white}"
+    select db in "${databases[@]}"; do
+        if [ -n "$db" ]; then
+            DATABASE="$db"
+            echo -e "${green}Selected database: $DATABASE${white}"
+            return 0
+        else
+            echo -e "${red}Invalid selection${white}"
+        fi
+    done
+}
+
+# Create dumps directory if it doesn't exist
+ensure_dumps_dir() {
+    local dumps_dir="${HOME}/database-dumps"
+    if [ ! -d "$dumps_dir" ]; then
+        mkdir -p "$dumps_dir"
+    fi
+}
+
+# Perform database dump
+dump_database() {
+    local custom_suffix="$1"
+    local timestamp
+    local suffix
+    local fullpath
+    
+    timestamp=$(date +%s)
+    
+    if [ -z "$custom_suffix" ]; then
+        suffix=$timestamp
+    else
+        suffix="$timestamp-$custom_suffix"
+    fi
+    
+    fullpath="${HOME}/database-dumps/${DATABASE}-${suffix}.sql"
+    
+    echo -e "${green}Starting dump of database '$DATABASE'...${white}"
+    
+    if docker exec $MYSQL_CONTAINER \
+        /usr/bin/mysqldump -u "$DB_USERNAME" --password="$DB_PASSWORD" "$DATABASE" > "$fullpath"; then
+        echo -e "${green}Successfully dumped to:${white} $fullpath"
+    else
+        echo -e "${red}Error: Database dump failed${white}"
+        rm -f "$fullpath"
+        exit 1
+    fi
+}
+
+main() {
+    local database=""
+    local suffix=""
+    local container=""
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --help|-h)
+                usage
+                exit 0
+                ;;
+            --suffix=*)
+                suffix="${1#*=}"
+                shift
+                ;;
+            --suffix)
+                suffix="$2"
+                shift 2
+                ;;
+            --container=*)
+                container="${1#*=}"
+                shift
+                ;;
+            --container)
+                container="$2"
+                shift 2
+                ;;
+            --database=*)
+                database="${1#*=}"
+                shift
+                ;;
+            --database)
+                database="$2"
+                shift 2
+                ;;
+            *)
+                echo -e "${red}Error: Unknown argument $1${white}"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+
+    # First select the container
+    select_mysql_container "$container"
+
+    # Then ask for credentials
+    get_credentials
+
+    # Next select the database
+    select_database "$database"
+
+    # Finally, execute the dump
+    ensure_dumps_dir
+    dump_database "$suffix"
+}
+
+list_dumps() {
+    local dumps_dir="${HOME}/database-dumps"
+    
+    if [ ! -d "$dumps_dir" ]; then
+        echo -e "${yellow}No dumps directory found${white}"
+        return 0
+    fi
+    
+    local dumps=($(ls -1 "$dumps_dir"/*.sql 2>/dev/null))
+    
+    if [ ${#dumps[@]} -eq 0 ]; then
+        echo -e "${yellow}No dumps found${white}"
+        return 0
+    fi
+    
+    echo -e "${green}Available dumps:${white}"
+    echo -e "${yellow}--------------------------------------------------${white}"
+    
+    for dump in "${dumps[@]}"; do
+        local filename=$(basename "$dump")
+        local size=$(du -h "$dump" | cut -f1)
+        local date=$(date -r "$dump" "+%Y-%m-%d %H:%M:%S")
+        
+        echo -e "${green}File:${white} $filename"
+        echo -e "${green}Size:${white} $size"
+        echo -e "${green}Date:${white} $date"
+        echo -e "${yellow}--------------------------------------------------${white}"
+    done
+}
+
+main() {
+    local database=""
+    local suffix=""
+    local container=""
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --help|-h)
+                usage
+                exit 0
+                ;;
+	    --list|-l)
+                list_dumps
+                exit 0
+                ;;
+            --suffix=*)
+                suffix="${1#*=}"
+                shift
+                ;;
+            --suffix)
+                suffix="$2"
+                shift 2
+                ;;
+            --container=*)
+                container="${1#*=}"
+                shift
+                ;;
+            --container)
+                container="$2"
+                shift 2
+                ;;
+            --database=*)
+                database="${1#*=}"
+                shift
+                ;;
+            --database)
+                database="$2"
+                shift 2
+                ;;
+            *)
+                echo -e "${red}Error: Unknown argument $1${white}"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+    
+    get_credentials
+    select_mysql_container "$container"
+    select_database "$database"
+    ensure_dumps_dir
+    dump_database "$suffix"
+}
+
+main "$@"

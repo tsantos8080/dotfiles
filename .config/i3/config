@@ -195,13 +195,8 @@ bar {
         status_command i3blocks
 }
 
-# Keyboard language
-# exec --no-startup-id setxkbmap -layout us -variant intl
-# exec --no-startup-id setxkbmap -model pc105 -layout br -variant thinkpad
-exec --no-startup-id "setxkbmap -layout us,br -variant intl,thinkpad -option 'grp:ctrl_alt_toggle'"
-
-# 120hz
-# exec --no-startup-id xrandr --output HDMI-1 --mode 1920x1080 --rate 120
+# Apply custom settings per device
+exec --no-startup-id ${HOME}/dotfiles/.config/i3/scripts/custom-settings-per-device.sh
 
 # picom
 exec --no-startup-id picom

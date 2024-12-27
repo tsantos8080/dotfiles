@@ -1,12 +1,16 @@
 [
     // <----------------- [START] AI ------------------->
     { // Inline edit
-        "key": "space space",
+        "key": "space e",
         "command": "aipopup.action.modal.generate",
         "when": "vim.mode == 'VisualLine' && editorTextFocus"
     },
-    { // Focus chat
+    { // Open chat
         "key": "alt+a",
+        "command": "aichat.newfollowupaction",
+    },
+    { // New chat
+        "key": "alt+shift+a",
         "command": "aichat.newchataction",
     },
     { // Add to chat
@@ -23,16 +27,31 @@
         "key": "alt+c",
         "command": "composer.openAsPane",
     },
+    { // New composer
+        "key": "alt+shift+c",
+        "command": "composer.createNewChat",
+    },
     { // Close composer
         "key": "alt+q",
         "command": "aichat.close-sidebar",
         "when": "workbench.panel.aichat.view.visible",
     },
+    { // Show chat/composer history
+        "key": "alt+h",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "composer.showComposerChatHistory",
+                "composer.showComposerHistory",
+            ]
+        },
+        "when": "composerIsEnabled",
+     },
     // <----------------- [END] AI ------------------->
     //
     // <----------------- [START] Search ------------------->
     { // Search
-        "key": "space f s",
+        "key": "space s g",
         "command": "runCommands",
         "args": {
             "commands": [
@@ -136,12 +155,13 @@
     },
     // <----------------- [END] Interface ------------------->
     { // Close terminal and sidebar
-        "key": "ctrl+x",
+        "key": "alt+shift+q",
         "command": "runCommands",
         "args": {
             "commands": [
                 "workbench.action.closePanel",
                 "workbench.action.closeSidebar",
+                "aichat.close-sidebar",
             ],
         },
     },
@@ -174,8 +194,13 @@
         "command": "workbench.action.quickOpen",
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
+    { // List open editors
+        "key": "space f b",
+        "command": "workbench.action.showAllEditors",
+        "when": "vim.mode == 'Normal' && editorTextFocus"
+    },
     { // Toggle open
-        "key": "tab",
+        "key": "space tab",
         "command": "runCommands",
         "args": {
             "commands": [
@@ -234,6 +259,11 @@
         "key": "space l shift+F",
         "command": "editor.action.formatSelection",
         "when": "vim.mode == 'VisualLine' && editorTextFocus"
+    },
+    { // Toggle word wrap
+        "key": "space w",
+        "command": "editor.action.toggleWordWrap",
+        "when": "vim.mode == 'Normal' && editorTextFocus"
     },
     { // Paste without losing yank
         "key": "space p",
@@ -337,6 +367,6 @@
     // <----------------- [START] Disable ------------------->
     {
         "key": "ctrl+tab",
-    }
+    },
     // <----------------- [END] Disable ------------------->
 ]

@@ -1,0 +1,20 @@
+
+{
+    // Auto save
+    "files.autoSave": "afterDelay",
+
+    // Disable minimap
+    "editor.minimap.enabled": false,
+
+    // Move the sidebar to the right
+    "workbench.sideBar.location": "right",
+
+    // Git blame
+    "git.blame.editorDecoration.enabled": true,
+
+    // Show a single tab
+    "workbench.editor.showTabs": "single",
+
+    // Compact bar
+    "window.titleBarStyle": "custom",
+}

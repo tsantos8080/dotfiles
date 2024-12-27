@@ -21,6 +21,10 @@ code --install-extension vscodevim.vim
 code --install-extension waderyan.gitblame
 code --install-extension xdebug.php-debug
 
+# Settings
+mv -f ~/.config/Code/User/settings.json ~/.config/Code/User/settings.json.bak 2> /dev/null
+ln -sf ${PWD}/.config/Code/User/settings.json ~/.config/Code/User/settings.json
+
 # Keybindings
 mv -f ~/.config/Code/User/keybindings.json ~/.config/Code/User/keybindings.json.bak 2> /dev/null
 ln -sf ${PWD}/.config/Code/User/keybindings.json ~/.config/Code/User/keybindings.json

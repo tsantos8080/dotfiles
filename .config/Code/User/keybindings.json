@@ -238,7 +238,7 @@
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
     { // Show commands
-        "key": "space space",
+        "key": "F1",
         "command": "workbench.action.showCommands",
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },

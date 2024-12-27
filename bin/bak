@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# Output colors
+red='\e[1;31m'
+green='\e[1;32m'
+white='\e[0;37m'
+
+usage() {
+    program_name=$(basename "$0")
+    cat <<EOF
+Usage: $program_name [-d|--delete] <file_path>
+
+Creates a backup of the specified file by adding .bak extension.
+If a backup already exists, it will increment (.bak2, .bak3, etc.)
+
+Options:
+    -h, --help     Show this message
+    -d, --delete   Delete the original file after backup
+    
+Arguments:
+    file_path    Path to the file to backup
+EOF
+}
+
+create_backup() {
+    file="$1"
+    delete_original="$2"
+    
+    # Check if file exists
+    if [ ! -f "$file" ]; then
+        echo -e "${red}Error: File '$file' does not exist${white}"
+        exit 1
+    fi
+    
+    # Start with .bak extension
+    backup_file="$file.bak"
+    counter=2
+    
+    # Keep incrementing number until we find a name that doesn't exist
+    while [ -f "$backup_file" ]; do
+        backup_file="$file.bak$counter"
+        counter=$((counter + 1))
+    done
+    
+    # Create the backup
+    cp "$file" "$backup_file"
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${green}Backup created: $backup_file${white}"
+        
+        # Delete original if requested
+        if [ "$delete_original" = "true" ]; then
+            rm "$file"
+            if [ $? -eq 0 ]; then
+                echo -e "${green}Original file deleted${white}"
+            else
+                echo -e "${red}Warning: Failed to delete original file${white}"
+            fi
+        fi
+    else
+        echo -e "${red}Error: Failed to create backup${white}"
+        exit 1
+    fi
+}
+
+main() {
+    delete_flag="false"
+    
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            -d|--delete)
+                delete_flag="true"
+                shift
+                ;;
+            *)
+                if [ -n "$file_path" ]; then
+                    echo -e "${red}Error: Too many arguments${white}"
+                    usage
+                    exit 1
+                fi
+                file_path="$1"
+                shift
+                ;;
+        esac
+    done
+    
+    if [ -z "$file_path" ]; then
+        echo -e "${red}Error: Please provide a file path${white}"
+        usage
+        exit 1
+    fi
+    
+    create_backup "$file_path" "$delete_flag"
+}
+
+main "$@" 

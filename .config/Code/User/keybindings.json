@@ -1,42 +1,88 @@
 [
     // <----------------- [START] AI ------------------->
-    { // Inline edit
+    { // Inline edit (VSCode)
+        "key": "space e",
+        "command": "inlineChat.start",
+        "when": "(vim.mode == 'Normal' || vim.mode == 'VisualLine') && editorTextFocus",
+    },
+    { // Inline edit (Cursor)
         "key": "space e",
         "command": "aipopup.action.modal.generate",
-        "when": "vim.mode == 'VisualLine' && editorTextFocus"
+        "when": "(vim.mode == 'Normal' || vim.mode == 'VisualLine') && editorTextFocus && aichatPosition",
     },
-    { // Open chat
+    { // Open chat (VSCode)
+        "key": "alt+a",
+        "command": "workbench.panel.chat.view.copilot.focus",
+    },
+    { // Open chat (Cursor)
         "key": "alt+a",
         "command": "aichat.newfollowupaction",
+        "when": "aichatPosition",
     },
-    { // New chat
+    { // New chat (VSCode)
+        "key": "alt+shift+a",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "workbench.panel.chat.view.copilot.focus",
+                "workbench.action.chat.newChat",
+            ]
+        },
+    },
+    { // New chat (Cursor)
         "key": "alt+shift+a",
         "command": "aichat.newchataction",
+        "when": "aichatPosition",
     },
-    { // Add to chat
+    { // Add to chat (VSCode)
         "key": "ctrl+space ctrl+space",
-        "command": "aichat.insertselectionintochat",
+        "command": "github.copilot.chat.attachSelection",
         "when": "vim.mode == 'VisualLine' && editorTextFocus"
     },
-    { // Close chat
+    { // Add to chat (Cursor)
+        "key": "ctrl+space ctrl+space",
+        "command": "aichat.insertselectionintochat",
+        "when": "vim.mode == 'VisualLine' && editorTextFocus && aichatPosition"
+    },
+    { // Close chat (Cursor)
         "key": "alt+q",
         "command": "aichat.newchataction",
         "when": "view.workbench.panel.aichat.view.visible && !editorFocus && !terminalFocus"
     },
-    { // Open composer
+    { // Open Copilot Edits (VSCode)
+        "key": "alt+c",
+        "command": "workbench.action.chat.openEditSession",
+    },
+    { // Open composer (Cursor)
         "key": "alt+c",
         "command": "composer.openAsPane",
+        "when": "aichatPosition",
     },
-    { // New composer
+    { // New Copilot Edits (VSCode)
+        "key": "alt+shift+c",
+        "command": "workbench.action.chat.newEditSession",
+    },
+    { // New composer (Cursor)
         "key": "alt+shift+c",
         "command": "composer.createNewChat",
+        "when": "aichatPosition",
     },
-    { // Close composer
+    { // Close composer (Cursor)
         "key": "alt+q",
         "command": "aichat.close-sidebar",
-        "when": "workbench.panel.aichat.view.visible",
+        "when": "aichatPosition",
     },
-    { // Show chat/composer history
+    { // Close chat/Copilot Edits (VSCode)
+        "key": "alt+q",
+        "command": "workbench.action.closeAuxiliaryBar",
+        "when": "auxiliaryBarFocus",
+    },
+    { // Show chat/Copilot Edits history (VSCode)
+        "key": "alt+h",
+        "command": "workbench.action.chat.history",
+        "when": "workbench.panel.chat.view.copilot.visible || workbench.panel.chat.view.copilot.visible",
+    },
+    { // Show chat/composer history (Cursor)
         "key": "alt+h",
         "command": "runCommands",
         "args": {
@@ -45,7 +91,7 @@
                 "composer.showComposerHistory",
             ]
         },
-        "when": "composerIsEnabled",
+        "when": "composerIsEnabled && aichatPosition",
      },
     // <----------------- [END] AI ------------------->
     //
@@ -154,7 +200,18 @@
         "command": "workbench.action.increaseViewWidth",
     },
     // <----------------- [END] Interface ------------------->
-    { // Close terminal and sidebar
+    { // Close terminal and sidebar (VSCode)
+        "key": "alt+shift+q",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "workbench.action.closePanel",
+                "workbench.action.closeSidebar",
+                "workbench.action.closeAuxiliaryBar",
+            ],
+        },
+    },
+    { // Close terminal and sidebar (Cursor)
         "key": "alt+shift+q",
         "command": "runCommands",
         "args": {
@@ -164,6 +221,7 @@
                 "aichat.close-sidebar",
             ],
         },
+        "when": "aichatPosition",
     },
     // <----------------- [END] Interface ------------------->
     //
@@ -340,6 +398,7 @@
         "command": "git.revertSelectedRanges",
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },
+
     { // Lazygit
         "key": "space g l",
         "command": "runCommands",

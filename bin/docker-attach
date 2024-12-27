@@ -1,0 +1,141 @@
+#!/usr/bin/zsh
+
+# Output colors
+blue='\e[1;34m'
+red='\e[1;31m'
+white='\e[0;37m'
+
+# Print usage message
+usage() {
+    local program_name
+    program_name=${0##*/}
+    cat <<EOF
+Usage: $program_name <container_name> [options]
+
+Options:
+    --help, -h              Show this message
+    --command, -c <cmd>     Execute a single command and exit
+    
+Arguments:
+    container_name    Name or ID of the container to attach to
+EOF
+}
+
+# Check if Docker is running
+check_docker() {
+    if ! docker info >/dev/null 2>&1; then
+        echo -e "${red}Error: Docker is not running${white}"
+        exit 1
+    fi
+}
+
+# Attach to container
+attach_container() {
+    local container_pattern="$1"
+    local command="$2"
+    local matching_containers
+    
+    # Get matching containers - if no pattern, get all containers
+    if [ -n "$container_pattern" ]; then
+        matching_containers=$(docker ps --format '{{.Names}}' | grep "$container_pattern" || true)
+    else
+        matching_containers=$(docker ps --format '{{.Names}}')
+    fi
+    
+    # Count matching containers
+    local count
+    count=$(echo "$matching_containers" | grep -v '^$' | wc -l)
+    
+    if [ "$count" -eq 0 ]; then
+        echo -e "${red}Error: No containers found${white}"
+        exit 1
+    fi
+
+    local container_name
+    
+    if [ "$count" -gt 1 ]; then
+        echo -e "${blue}Available containers:${white}"
+        
+        # Create array with container names
+        local containers=()
+        while IFS= read -r container; do
+            [ -n "$container" ] && containers+=("$container")
+        done <<< "$matching_containers"
+        
+        # Show numbered list of containers
+        local i=1
+        for container in "${containers[@]}"; do
+            echo -e "  ${blue}$i)${white} $container"
+            ((i++))
+        done
+        
+        # Ask for selection
+        local selection
+        echo -en "\nSelect container (1-$count): "
+        read -r selection
+        
+        # Validate selection
+        if ! [[ "$selection" =~ ^[0-9]+$ ]] || [ "$selection" -lt 1 ] || [ "$selection" -gt "$count" ]; then
+            echo -e "${red}Error: Invalid selection${white}"
+            exit 1
+        fi
+        
+        container_name="${containers[$((selection))]}"
+    else
+        container_name=$(echo "$matching_containers" | head -n1)
+    fi
+    
+    echo -e "${blue}Attempting to connect to container: $container_name${white}"
+
+    if [ -n "$command" ]; then
+        # Execute single command
+        if docker exec -it "$container_name" which bash >/dev/null 2>&1; then
+            echo -e "${blue}Executing command with bash...${white}"
+            docker exec -it "$container_name" bash -c "$command"
+        else
+            echo -e "${blue}Executing command with sh...${white}"
+            docker exec -it "$container_name" sh -c "$command"
+        fi
+    else
+        # Interactive shell
+        if docker exec -it "$container_name" which bash >/dev/null 2>&1; then
+            echo -e "${blue}Connecting with bash...${white}"
+            docker exec -it "$container_name" bash
+        else
+            echo -e "${blue}Bash not found, connecting with sh...${white}"
+            docker exec -it "$container_name" sh
+        fi
+    fi
+}
+
+main() {
+    local container_pattern=""
+    local command=""
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --help|-h)
+                usage
+                exit 0
+                ;;
+            --command|-c)
+                shift
+                if [ -z "$1" ]; then
+                    echo -e "${red}Error: --command requires an argument${white}"
+                    exit 1
+                fi
+                command="$1"
+                shift
+                ;;
+            *)
+                container_pattern="$1"
+                shift
+                ;;
+        esac
+    done
+    
+    check_docker
+    attach_container "$container_pattern" "$command"
+}
+
+main "$@" 

@@ -17,8 +17,8 @@ return {
     })
 
     -- keymaps
-    vim.keymap.set('n', '<leader>sf', '<cmd>Telescope find_files<cr>')
+    vim.keymap.set('n', '<leader>ff', '<cmd>Telescope find_files<cr>')
     vim.keymap.set('n', '<leader>sg', '<cmd>Telescope live_grep<cr>')
-    vim.keymap.set('n', '<leader>sr', '<cmd>Telescope buffers<cr>')
+    vim.keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>')
   end
 }

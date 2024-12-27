@@ -107,6 +107,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias dp="docker ps --filter 'status=running' --format '{{.ID}}' | xargs -r docker pause"
+alias dP="docker ps --filter 'status=paused' --format '{{.ID}}' | xargs -r docker unpause"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

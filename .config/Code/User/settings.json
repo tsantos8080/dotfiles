@@ -25,6 +25,9 @@
     // Vim: set leader key
     "vim.leader": "<space>",
 
+    // Vim: set clipboard to system clipboard
+    "vim.useSystemClipboard": true,
+
     // Vim: easymotion plugin
     "vim.easymotion": true,
 

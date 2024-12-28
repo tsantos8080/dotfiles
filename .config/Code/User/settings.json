@@ -52,4 +52,7 @@
     // Vim: sneak plugin
     "vim.sneak": true,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
+
+    // Git: enable smart commit
+    "git.enableSmartCommit": true,
 }

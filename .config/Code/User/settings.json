@@ -1,4 +1,3 @@
-
 {
     // Auto save
     "files.autoSave": "afterDelay",
@@ -14,6 +13,7 @@
 
     // Show a single tab
     "workbench.editor.showTabs": "single",
+    "zenMode.showTabs": "single",
 
     // Compact bar
     "window.titleBarStyle": "custom",
@@ -21,6 +21,21 @@
 
     // Prevent ALT key from activating the menu bar
     "window.enableMenuBarMnemonics": false,
+
+    // Font
+    "editor.fontFamily": "JetBrains Mono",
+    "editor.fontSize": 17,
+    "editor.lineHeight": 32,
+    "editor.fontLigatures": true,
+
+    // Smooth scrolling
+    "editor.smoothScrolling": true,
+
+    // Explorer: compact folders
+    "explorer.compactFolders": false,
+
+    // Cursor smooth animation
+    "editor.cursorSmoothCaretAnimation": "on",
 
     // Vim: set leader key
     "vim.leader": "<space>",
@@ -41,6 +56,12 @@
                 "y"
             ]
         }
+    ],
+
+    // Vim: center cursor when scrolling
+    "vim.normalModeKeyBindings": [
+        { "before": [ "<C-u>" ], "after": [ "<C-u>", "z", "z" ] },
+        { "before": [ "<C-d>" ], "after": [ "<C-d>", "z", "z" ] }
     ],
 
     // Vim: easymotion plugin

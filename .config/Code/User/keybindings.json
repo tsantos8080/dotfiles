@@ -225,7 +225,7 @@
     },
     // <----------------- [END] Interface ------------------->
     //
-    // <----------------- [Start] Editor ------------------->
+    // <----------------- [START] Editor ------------------->
     // Focus on editor
     {
         "key": "alt+b",
@@ -346,6 +346,13 @@
         "command": "editor.action.toggleWordWrap",
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },
+    { // Toggle Zen Mode
+        "key": "space z",
+        "command": "workbench.action.toggleZenMode",
+        "when": "vim.mode == 'Normal' && editorTextFocus"
+    },
+    // <----------------- [END] Editor ------------------->
+    //
     // <----------------- [START] Terminal ------------------->
     // Toggle terminal
     {

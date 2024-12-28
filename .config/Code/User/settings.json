@@ -18,7 +18,16 @@
     // Compact bar
     "window.titleBarStyle": "custom",
 
-    // Vim
+    // Vim: set leader key
     "vim.leader": "<space>",
+
+    // Vim: easymotion plugin
     "vim.easymotion": true,
+
+    // Vim: surround plugin
+    "vim.surround": true,
+
+    // Vim: sneak plugin
+    "vim.sneak": true,
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
 }

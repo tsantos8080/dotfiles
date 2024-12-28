@@ -346,19 +346,6 @@
         "command": "editor.action.toggleWordWrap",
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },
-    { // Paste without losing yank
-        "key": "space p",
-        "command": "vim.remap",
-        "args": {
-            "after": [
-                "p",
-                "g",
-                "v",
-                "y"
-            ]
-        },
-        "when": "(vim.mode == 'VisualLine' || vim.mode == 'Visual') && editorTextFocus"
-    },
     // <----------------- [START] Terminal ------------------->
     // Toggle terminal
     {

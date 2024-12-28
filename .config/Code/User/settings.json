@@ -28,6 +28,21 @@
     // Vim: set clipboard to system clipboard
     "vim.useSystemClipboard": true,
 
+    // Vim: prevent paste from losing yank
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "p",
+            ],
+            "after": [
+                "p",
+                "g",
+                "v",
+                "y"
+            ]
+        }
+    ],
+
     // Vim: easymotion plugin
     "vim.easymotion": true,
 

@@ -64,7 +64,7 @@
     },
     { // New composer (Cursor)
         "key": "alt+shift+c",
-        "command": "composer.createNewChat",
+        "command": "composer.createNew",
         "when": "aichatPosition",
     },
     { // Close composer (Cursor)

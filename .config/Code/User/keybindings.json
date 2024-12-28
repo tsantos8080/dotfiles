@@ -351,6 +351,11 @@
         "command": "workbench.action.toggleZenMode",
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },
+    { // Review code
+        "key": "space r",
+        "command": "github.copilot.chat.review",
+        "when": "(vim.mode == 'Normal' || vim.mode == 'VisualLine') && editorTextFocus"
+    },
     // <----------------- [END] Editor ------------------->
     //
     // <----------------- [START] Terminal ------------------->

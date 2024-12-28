@@ -303,6 +303,14 @@
         "command": "workbench.action.closeActiveEditor",
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },
+    { // EasyMotion
+        "key": "space space",
+        "command": "vim.remap",
+        "args": {
+            "after": ["<leader>", "<leader>"]
+        },
+        "when": "vim.mode == 'Normal' && editorTextFocus"
+    },
     { // Move selected lines up
         "key": "space shift+K",
         "command": "editor.action.moveLinesUpAction",

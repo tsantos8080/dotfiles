@@ -17,4 +17,8 @@
 
     // Compact bar
     "window.titleBarStyle": "custom",
+
+    // Vim
+    "vim.leader": "<space>",
+    "vim.easymotion": true,
 }

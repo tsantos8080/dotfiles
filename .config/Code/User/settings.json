@@ -54,23 +54,15 @@
 
     // Vim: prevent paste from losing yank
     "vim.visualModeKeyBindingsNonRecursive": [
-        {
-            "before": [
-                "p",
-            ],
-            "after": [
-                "p",
-                "g",
-                "v",
-                "y"
-            ]
-        }
+        { "before": ["p"], "after": ["p", "g", "v", "y"] },
     ],
 
     // Vim: center cursor when scrolling
     "vim.normalModeKeyBindings": [
+        // { "before": [ "k" ], "after": [ "k", "z", "z" ] },
+        // { "before": [ "j" ], "after": [ "j", "z", "z" ] },
         { "before": [ "<C-u>" ], "after": [ "<C-u>", "z", "z" ] },
-        { "before": [ "<C-d>" ], "after": [ "<C-d>", "z", "z" ] }
+        { "before": [ "<C-d>" ], "after": [ "<C-d>", "z", "z" ] },
     ],
 
     // Vim: easymotion plugin

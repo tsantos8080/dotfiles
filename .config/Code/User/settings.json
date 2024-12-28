@@ -17,6 +17,7 @@
 
     // Zen mode
     "zenMode.hideLineNumbers": false,
+    "zenMode.hideStatusBar": false,
 
     // Compact bar
     "window.titleBarStyle": "custom",

@@ -17,6 +17,10 @@
 
     // Compact bar
     "window.titleBarStyle": "custom",
+    "window.menuBarVisibility": "hidden",
+
+    // Prevent ALT key from activating the menu bar
+    "window.enableMenuBarMnemonics": false,
 
     // Vim: set leader key
     "vim.leader": "<space>",

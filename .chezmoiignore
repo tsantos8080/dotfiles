@@ -1,0 +1,9 @@
+{{ if eq .chezmoi.os "linux" }}
+Library/Application Support/*
+scripts/mac/*
+{{ end }}
+
+{{ if eq .chezmoi.os "darwin" }}
+.config/Code/*
+scripts/linux/*
+{{ end }}

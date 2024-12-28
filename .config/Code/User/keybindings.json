@@ -326,6 +326,14 @@
         },
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },
+    { // EasyMotion
+        "key": "shift+space shift+space",
+        "command": "vim.remap",
+        "args": {
+            "after": ["<leader>", "<leader>", "<leader>"]
+        },
+        "when": "vim.mode == 'Normal' && editorTextFocus"
+    },
     { // Move selected lines up
         "key": "space shift+K",
         "command": "editor.action.moveLinesUpAction",
@@ -435,14 +443,10 @@
         "when": "(vim.mode == 'Normal' && editorTextFocus)"
     },
     // <----------------- [END] Git ------------------->
-    /////////////////// To test
-    {
-        "key": "F12",
-        "command": "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
-    },
-    // <----------------- [START] Disable ------------------->
+    //
+    // <----------------- [START] Disabled keybindings ------------------->
     {
         "key": "ctrl+tab",
     },
-    // <----------------- [END] Disable ------------------->
+    // <----------------- [END] Disabled keybindings ------------------->
 ]

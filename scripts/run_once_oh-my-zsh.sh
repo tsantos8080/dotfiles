@@ -18,7 +18,3 @@ else
 	git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 fi
 
-# Create symlinks
-mv -f ~/.config/.zshrc ~/.config/.zshrc.bak 2> /dev/null
-ln -sf ${PWD}/.zshrc ~/.zshrc
-

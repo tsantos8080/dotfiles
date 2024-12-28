@@ -23,7 +23,3 @@ else
 	source ~/.zshrc
 fi
 
-# Create symlinks
-mv -f ~/.config/nvim ~/.config/nvim.bak 2> /dev/null
-ln -sf ${PWD}/.config/nvim ~/.config/nvim
-

@@ -6,7 +6,3 @@ else
 	sudo apt install -y flameshot
 fi
 
-# Create symlinks
-mv -f ~/.config/flameshot ~/.config/flameshot.bak 2> /dev/null
-ln -sf ${PWD}/.config/flameshot/ ~/.config/flameshot
-

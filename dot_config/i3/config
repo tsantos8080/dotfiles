@@ -202,7 +202,7 @@ exec --no-startup-id ${HOME}/dotfiles/.config/i3/scripts/custom-settings-per-dev
 exec --no-startup-id picom
 
 # Wallpaper
-exec --no-startup-id feh --bg-scale ${HOME}/dotfiles/wallpaper.*
+exec --no-startup-id feh --bg-scale ~/.config/i3/wallpaper.*
 
 # Print
 bindsym Print exec flameshot gui

@@ -226,7 +226,12 @@
     // <----------------- [END] Interface ------------------->
     //
     // <----------------- [Start] Editor ------------------->
-    //
+    // Focus on editor
+    {
+        "key": "alt+b",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "!editorTextFocus"
+    },
     { // Edit keybindings
         "key": "space ,",
         "command": "workbench.action.openGlobalKeybindingsFile",
@@ -242,8 +247,18 @@
         "command": "workbench.action.showCommands",
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
+    { // Open folder
+        "key": "space f d",  // 'f' for file, 'd' for directory
+        "command": "workbench.action.files.openFolder",
+        "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
+    },
+    { // Open file
+        "key": "space f o",  // 'f' for file, 'o' for open
+        "command": "workbench.action.files.openFile",
+        "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
+    },
     { // Open recent
-        "key": "space shift+R",
+        "key": "space f r",  // 'f' for file, 'r' for recent
         "command": "workbench.action.openRecent",
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
@@ -344,11 +359,6 @@
         },
         "when": "(vim.mode == 'VisualLine' || vim.mode == 'Visual') && editorTextFocus"
     },
-    // { // Remove focus on interface
-    //     "key": "escape",
-    //     "command": "workbench.action.focusActiveEditorGroup",
-    //     "when": "!editorTextFocus && !terminalFocus"
-    // },
     // <----------------- [START] Terminal ------------------->
     // Toggle terminal
     {

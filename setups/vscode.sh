@@ -20,6 +20,7 @@ code --install-extension nidu.copy-json-path
 code --install-extension vscodevim.vim
 code --install-extension waderyan.gitblame
 code --install-extension xdebug.php-debug
+code --install-extension teabyii.ayu
 
 # Settings
 mv -f ~/.config/Code/User/settings.json ~/.config/Code/User/settings.json.bak 2> /dev/null

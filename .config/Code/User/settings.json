@@ -22,6 +22,9 @@
     // Prevent ALT key from activating the menu bar
     "window.enableMenuBarMnemonics": false,
 
+    // Theme
+    "workbench.colorTheme": "Ayu Dark",
+
     // Font
     "editor.fontFamily": "JetBrains Mono",
     "editor.fontSize": 17,

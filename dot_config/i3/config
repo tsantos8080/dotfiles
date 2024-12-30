@@ -196,7 +196,7 @@ bar {
 }
 
 # Apply custom settings per device
-exec --no-startup-id ${HOME}/dotfiles/.config/i3/scripts/custom-settings-per-device.sh
+exec --no-startup-id ${HOME}/.config/i3/scripts/custom-settings-per-device.sh
 
 # picom
 exec --no-startup-id picom

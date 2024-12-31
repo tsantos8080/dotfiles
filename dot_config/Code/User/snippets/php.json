@@ -1,0 +1,26 @@
+{
+	"public function": {
+		"prefix": "pubf",
+		"body": [
+			"public function ${1:functionName}($2): ${3:void}",
+			"{",
+			"\t$4",
+			"}"
+		],
+		"description": "Public function"
+	},
+	"private readonly": {
+		"prefix": "prro",
+		"body": [
+			"private readonly "
+		],
+		"description": "private readonly"
+	},
+	"dd": {
+		"prefix": "dd",
+		"body": [
+			"dd($1);"
+		],
+		"description": "dd"
+	},
+}

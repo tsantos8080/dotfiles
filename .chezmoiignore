@@ -1,9 +1,9 @@
 {{ if eq .chezmoi.os "linux" }}
-Library/Application Support/*
-scripts/mac/*
+Library/
+scripts/mac/
 {{ end }}
 
 {{ if eq .chezmoi.os "darwin" }}
-.config/Code/*
-scripts/linux/*
+.config/Code/
+scripts/linux/
 {{ end }}

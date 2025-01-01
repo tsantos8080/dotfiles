@@ -76,6 +76,9 @@
     "vim.sneak": true,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
 
+    // Vim: highlight yanked text
+    "vim.highlightedyank.enable": true,
+
     // Git: enable smart commit
     "git.enableSmartCommit": true,
 }

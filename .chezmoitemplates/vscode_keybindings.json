@@ -110,12 +110,12 @@
     { // Close search
         "key": "alt+q",
         "command": "workbench.action.closeSidebar",
-        "when": "view.workbench.view.search.visible"
+        "when": "view.workbench.view.search.visible && sideBarFocus"
     },
     { // Switch file
         "key": "enter",
         "command": "list.focusDown",
-        "when": "view.workbench.view.search.visible"
+        "when": "view.workbench.view.search.visible && sideBarFocus"
     },
     // <----------------- [END] Search ------------------->
     //
@@ -131,7 +131,7 @@
         "when": "filesExplorerFocus && !inputFocus"
     },
     { // Collapse
-        "key": "alt+c",
+        "key": "shift+w",
         "command": "list.collapseAll",
         "when": "filesExplorerFocus && !inputFocus"
     },
@@ -143,6 +143,19 @@
     { // Copy
         "key": "y",
         "command": "filesExplorer.copy",
+        "when": "filesExplorerFocus && !inputFocus"
+    },
+    { // Copy file name
+        "key": "Y",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "renameFile",
+                "editor.action.clipboardCopyAction",
+                "acceptRenameInput",
+                "workbench.files.action.focusFilesExplorer",
+            ],
+        },
         "when": "filesExplorerFocus && !inputFocus"
     },
     { // Cut
@@ -163,6 +176,11 @@
     { // Delete
         "key": "d",
         "command": "deleteFile",
+        "when": "filesExplorerFocus && !inputFocus"
+    },
+    { // New file
+        "key": "a",
+        "command": "explorer.newFile",
         "when": "filesExplorerFocus && !inputFocus"
     },
     { // New folder
@@ -296,6 +314,11 @@
     { // List symbols
         "key": "space l s",
         "command": "workbench.action.gotoSymbol",
+        "when": "vim.mode == 'Normal' && editorTextFocus"
+    },
+    { // Go to next problem
+        "key": "space l p",
+        "command": "editor.action.marker.next",
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },
     { // Show hover

@@ -81,4 +81,13 @@
 
     // Git: enable smart commit
     "git.enableSmartCommit": true,
+
+    // Snippets on top
+    "editor.snippetSuggestions": "top",
+
+    // AI Settings
+    "github.copilot.selectedCompletionModel": "gpt-4o-copilot",
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "github.copilot.chat.edits.temporalContext.enabled": true,
+    "github.copilot.chat.editor.temporalContext.enabled": true,
 }

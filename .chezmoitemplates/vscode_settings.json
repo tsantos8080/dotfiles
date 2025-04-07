@@ -89,4 +89,5 @@
     "github.copilot.selectedCompletionModel": "gpt-4o-copilot",
     "github.copilot.chat.edits.temporalContext.enabled": true,
     "github.copilot.chat.editor.temporalContext.enabled": true,
+    "github.copilot.editor.enableAutoCompletions": false,
 }

@@ -23,4 +23,17 @@
 		],
 		"description": "dd"
 	},
+	"test": {
+		"prefix": "test",
+		"body": [
+			"/**",
+			"* @test",
+			"*/",
+			"public function ${1:functionName}(): void",
+			"{",
+			"\t$4",
+			"}"
+		],
+		"description": "Test block"
+	},
 }

@@ -15,6 +15,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.wo.relativenumber = true
 vim.wo.number = true
+vim.opt.shiftwidth = 4
 
 -- Remap '<' and '>' in visual mode to reselect the last visual selection after indenting
 vim.api.nvim_set_keymap('v', '<', '<gv', { noremap = true, silent = true })

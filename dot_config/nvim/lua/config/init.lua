@@ -25,4 +25,7 @@ vim.api.nvim_set_keymap('n', '<tab>', ':buffer #<CR>', { noremap = true, silent 
 
 vim.api.nvim_set_keymap('n', '<leader>r', ':lua require("scripts").run_test()<cr>', {})
 
+-- Save file
+vim.api.nvim_set_keymap('n', '<leader>w', ':w<cr>', {})
+
 require("lazy").setup("plugins")

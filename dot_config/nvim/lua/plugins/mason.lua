@@ -39,11 +39,35 @@ return {
     })
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
+    
     local on_attach = function()
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
+
+	vim.keymap.set('n', 'gr', function()
+	    local clients = vim.lsp.get_active_clients()
+	    local current_buf = vim.api.nvim_get_current_buf()
+
+	    if vim.tbl_isempty(clients) then
+		print("LSP is not active.")
+		return
+	    end
+
+	    local references = vim.lsp.buf.definition({
+		on_list = function(opts)
+		    local current_line = vim.api.nvim_win_get_cursor(0)[1]
+		    local current_filename = vim.api.nvim_buf_get_name(0)
+		    local item = opts.items[1]
+
+		    if current_line == item.lnum and current_filename == item.filename then
+			vim.lsp.buf.references()
+			return
+		    end
+
+		    vim.lsp.buf.definition()
+		end
+	    })
+	end, {})
+
 	vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
 	vim.keymap.set('n', 'r', vim.lsp.buf.rename, {})
     end

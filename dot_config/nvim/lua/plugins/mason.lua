@@ -14,17 +14,11 @@ return {
 
     require('mason-lspconfig').setup({
       ensure_installed = {
-	'intelephense',
+	'phpactor',
 	'quick_lint_js',
       },
     })
 
-    local on_attach = function()
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-    end
-    
     local cmp = require('cmp')
     cmp.setup({
       snippet = {
@@ -46,7 +40,14 @@ return {
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    require('lspconfig').intelephense.setup({
+    local on_attach = function()
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
+	vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+	vim.keymap.set('n', 'r', vim.lsp.buf.rename, {})
+    end
+
+    require('lspconfig').phpactor.setup({
       root_dir  = function() return vim.loop.cwd(); end,
       on_attach = on_attach,
       capabilities = capabilities,

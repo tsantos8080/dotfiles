@@ -25,6 +25,7 @@ return {
         'stylua',
         'markdownlint',
         'pretty-php',
+        'prettierd',
       },
     })
 

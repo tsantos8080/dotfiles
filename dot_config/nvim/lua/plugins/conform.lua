@@ -9,6 +9,10 @@ return {
         lua = { 'stylua' },
         markdown = { 'markdownlint' },
       },
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_format = 'fallback',
+      },
     })
 
     vim.keymap.set('n', '<leader>lf', function()

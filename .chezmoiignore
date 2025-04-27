@@ -2,7 +2,6 @@
 
 # Mac only
 Library/
-scripts/mac/
 
 {{ end }}
 

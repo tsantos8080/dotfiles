@@ -12,16 +12,10 @@ scripts/mac/
 scripts/linux/
 .local/bin/vscode-update
 
-# Everything from .config
-.config/*
+.config/flameshot
+.config/i3
+.config/i3blocks
+.config/picom
 
-# Allow nvim config
-!.config/nvim/
-
-# Allow vscode config
-!.config/Code/
-
-# Allow mise config
-!.config/mise/
 
 {{ end }}

@@ -6,7 +6,7 @@ else
 	brew install mise
 
 	# PHP dependencies
-	brew install autoconf gmp libsodium bison re2c libxml2 pkgconf libgd libiconv libzip
+	brew install autoconf gmp libsodium bison re2c libxml2 pkgconf libgd libiconv libzip icu4c
 fi
 
 # Configure

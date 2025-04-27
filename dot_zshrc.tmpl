@@ -8,7 +8,9 @@ plugins=(
   git
   zsh-autosuggestions
   sudo
-  nvm
+{{- if eq .chezmoi.os "linux" }}
+nvm
+{{- end }}
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -17,14 +19,13 @@ alias dp="docker ps --filter 'status=running' --format '"{{".ID"}}"' | xargs -r 
 alias dP="docker ps --filter 'status=paused' --format '"{{".ID"}}"' | xargs -r docker unpause"
 alias da="docker-attach"
 
+{{- if eq .chezmoi.os "linux" }}
+# NVM (useful for neovim)
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-{{- if eq .chezmoi.os "linux" }}
-
 # Active mise
 eval "$(~/.local/bin/mise activate zsh)"
-
 {{- end }}
 

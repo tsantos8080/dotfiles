@@ -35,4 +35,7 @@ scripts/*
 !scripts/
 !scripts/mac/
 
+# Allow Mac settings
+!Library/
+
 {{ end }}

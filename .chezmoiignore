@@ -26,6 +26,10 @@ scripts/mac/
 !.config/
 !.config/mise/
 
+# Allow .zshrc
+.config/*
+!.zshrc
+
 # Allow scripts for Mac
 scripts/*
 !scripts/

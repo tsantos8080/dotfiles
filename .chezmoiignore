@@ -10,6 +10,7 @@ scripts/mac/
 
 # Linux only
 scripts/linux/
+.local/bin/vscode-update
 
 # Everything from .config
 .config/*

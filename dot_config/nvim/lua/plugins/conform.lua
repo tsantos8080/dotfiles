@@ -12,7 +12,11 @@ return {
     })
 
     vim.keymap.set('n', '<leader>lf', function()
-      conform.format({ async = true })
+      conform.format({ async = true }, function(err)
+        if err ~= nil then
+          print(err)
+        end
+      end)
     end)
   end,
 }

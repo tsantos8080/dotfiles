@@ -3,6 +3,7 @@ return {
   dependencies = {
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
     'hrsh7th/nvim-cmp',
     'hrsh7th/cmp-nvim-lsp',
     'SirVer/ultisnips',
@@ -16,6 +17,13 @@ return {
       ensure_installed = {
 	'phpactor',
 	'quick_lint_js',
+      },
+    })
+
+    require('mason-tool-installer').setup({
+      ensure_installed = {
+	'stylua',
+	'markdownlint',
       },
     })
 

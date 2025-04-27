@@ -14,6 +14,7 @@ chezmoi init --apply https://github.com/tsantos8080/dotfiles.git
 | `<leader>w`        | Saves the current file.                                            |
 | `<leader>gb`       | Toggles GitBlame.                                                  |
 | `<leader>lg`       | Opens LazyGit.                                                     |
+| `<leader>lf`       | Format code.                                                       |
 | `gi`               | Opens the implementation of the current function or variable.      |
 | `gr`               | Shows references for the current function or variable.             |
 | `K`                | Shows hover information for the item under the cursor.             |

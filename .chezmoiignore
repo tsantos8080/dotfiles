@@ -1,9 +1,34 @@
 {{ if eq .chezmoi.os "linux" }}
+
+# Things for Mac
 Library/
 scripts/mac/
+
 {{ end }}
 
 {{ if eq .chezmoi.os "darwin" }}
-.config/Code/
-scripts/linux/
+
+# Everything
+*
+
+# Allow nvim config
+.config/*
+!.config/
+!.config/nvim/
+
+# Allow vscode config
+.config/*
+!.config/
+!.config/Code/
+
+# Allow mise config
+.config/*
+!.config/
+!.config/mise/
+
+# Allow scripts for Mac
+scripts/*
+!scripts/
+!scripts/mac/
+
 {{ end }}

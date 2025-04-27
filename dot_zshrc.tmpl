@@ -15,10 +15,6 @@ nvm
 
 source $ZSH/oh-my-zsh.sh
 
-alias dp="docker ps --filter 'status=running' --format '"{{".ID"}}"' | xargs -r docker pause"
-alias dP="docker ps --filter 'status=paused' --format '"{{".ID"}}"' | xargs -r docker unpause"
-alias da="docker-attach"
-
 {{- if eq .chezmoi.os "linux" }}
 # NVM (useful for neovim)
 export NVM_DIR="$HOME/.nvm"

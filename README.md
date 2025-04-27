@@ -1,6 +1,6 @@
 # dotfiles
 
-Install with chezmoi:
+Install with [chezmoi](https://www.chezmoi.io/install):
 ```
 chezmoi init --apply https://github.com/tsantos8080/dotfiles.git
 ```

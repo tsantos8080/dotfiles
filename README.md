@@ -23,6 +23,7 @@ chezmoi init --apply https://github.com/tsantos8080/dotfiles.git
 | `<leader>fo`       | Opens Telescope for recent files (only files from the current directory). |
 | `<leader>fg`       | Opens Telescope for Git status.                                    |
 | `<leader>fb`       | Opens Telescope to list open buffers.                              |
+| `<leader>fb`       | Opens Telescope to list TODOs not pushed yet.                      |
 | `<leader>sg`       | Starts live search using Telescope.                                |
 | `<leader>e`        | Toggles the visibility of NvimTree (file explorer).                |
 | `<leader>E`        | Locates and focuses on the current file in NvimTree.               |

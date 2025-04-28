@@ -6,13 +6,16 @@ ZSH_THEME="geoffgarside"
 
 plugins=(
   git
-  zsh-you-should-use
-  zsh-autosuggestions
-  zsh-syntax-highlighting
   sudo
-{{- if eq .chezmoi.os "linux" }}
-nvm
-{{- end }}
+  {{- if eq .chezmoi.os "linux" }}
+  nvm
+  {{- end }}
+  {{- /* Custom plugins */ -}}
+  {{- $pluginsContent := include ".chezmoitemplates/oh-my-zsh-custom-plugins" | trim -}}
+  {{- $plugins := splitList "\n" $pluginsContent -}}
+  {{- range $plugin := $plugins }}
+  {{ base $plugin | trimAll "\"" }}
+  {{- end }}
 )
 
 source $ZSH/oh-my-zsh.sh

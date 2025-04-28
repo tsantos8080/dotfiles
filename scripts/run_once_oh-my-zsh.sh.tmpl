@@ -18,9 +18,7 @@ sudo chsh -s /usr/bin/zsh
 
 # Plugins
 plugins=(
-    "https://github.com/zsh-users/zsh-autosuggestions"
-    "https://github.com/zsh-users/zsh-syntax-highlighting"
-    "https://github.com/MichaelAquilina/zsh-you-should-use"
+{{ template "oh-my-zsh-custom-plugins" -}}
 )
 
 ZSH_CUSTOM=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}

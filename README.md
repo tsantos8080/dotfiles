@@ -12,6 +12,7 @@ chezmoi init --apply https://github.com/tsantos8080/dotfiles.git
 | `<tab>`            | Switches to the previous buffer.                                   |
 | `<leader>t`        | Runs tests using a custom script.                                  |
 | `<leader>w`        | Saves the current file.                                            |
+| `<leader>gs`       | Toggle split line (TSJToggle).                                     |
 | `<leader>gb`       | Toggles GitBlame.                                                  |
 | `<leader>lg`       | Opens LazyGit.                                                     |
 | `<leader>lf`       | Format code.                                                       |

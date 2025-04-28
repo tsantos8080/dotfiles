@@ -17,21 +17,21 @@ sudo chsh -s /usr/bin/zsh
 {{- end }}
 
 # Plugins
-if [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-	echo -e "\e[32moh-my-zsh autosuggestions plugin is already installed. skipping...\e[0m"
-else
-	git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-fi
+plugins=(
+    "https://github.com/zsh-users/zsh-autosuggestions"
+    "https://github.com/zsh-users/zsh-syntax-highlighting"
+    "https://github.com/MichaelAquilina/zsh-you-should-use"
+)
 
-if [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-	echo -e "\e[32moh-my-zsh zsh-syntax-highlighting plugin is already installed. skipping...\e[0m"
-else
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-fi
+ZSH_CUSTOM=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}
 
-if [ -d "$HOME/.oh-my-zsh/custom/plugins/you-should-use" ]; then
-	echo -e "\e[32moh-my-zsh you-should-use plugin is already installed. skipping...\e[0m"
-else
-	git clone https://github.com/MichaelAquilina/zsh-you-should-use.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/you-should-use
-fi
+for url in "${plugins[@]}"; do
+    plugin=$(basename "$url")
+    plugin_dir="$ZSH_CUSTOM/plugins/$plugin"
 
+    if [ -d "$plugin_dir" ]; then
+        echo -e "\e[32moh-my-zsh $plugin plugin is already installed. skipping...\e[0m"
+    else
+        git clone "${url}.git" "$plugin_dir"
+    fi
+done

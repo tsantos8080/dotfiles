@@ -1,7 +1,7 @@
 {{- template "shebang" . }}
 
 if grep -q "oh-my-zsh.sh" "$HOME/.zshrc"; then
-	echo "\e[32moh-my-zsh is already installed. skipping...\e[0m"
+	echo -e "\e[32moh-my-zsh is already installed. skipping...\e[0m"
 else
 	{{- if eq .chezmoi.os "linux" }}
 	rm -rf ~/.oh-my-zsh
@@ -18,19 +18,19 @@ sudo chsh -s /usr/bin/zsh
 
 # Plugins
 if [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-	echo "\e[32moh-my-zsh autosuggestions plugin is already installed. skipping...\e[0m"
+	echo -e "\e[32moh-my-zsh autosuggestions plugin is already installed. skipping...\e[0m"
 else
-	git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+	git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 fi
 
 if [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-	echo "\e[32moh-my-zsh zsh-syntax-highlighting plugin is already installed. skipping...\e[0m"
+	echo -e "\e[32moh-my-zsh zsh-syntax-highlighting plugin is already installed. skipping...\e[0m"
 else
 	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 fi
 
 if [ -d "$HOME/.oh-my-zsh/custom/plugins/you-should-use" ]; then
-	echo "\e[32moh-my-zsh you-should-use plugin is already installed. skipping...\e[0m"
+	echo -e "\e[32moh-my-zsh you-should-use plugin is already installed. skipping...\e[0m"
 else
 	git clone https://github.com/MichaelAquilina/zsh-you-should-use.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/you-should-use
 fi

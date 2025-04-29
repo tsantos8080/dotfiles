@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+
+cmd="$*"
+
+if [[ -z "$cmd" ]]; then
+  echo "Usage: repeatable <command>"
+  exit 1
+fi
+
+while true; do
+  clear
+  print -P "%F{green}Running:%f $cmd"
+  echo
+  eval "$cmd"
+  echo
+  print -P "%F{blue}Press Enter to repeat, 'q' to quit...%f"
+  IFS= read -k 1 key
+  if [[ "$key" == "q" ]]; then
+    break
+  fi
+done

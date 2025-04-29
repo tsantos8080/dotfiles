@@ -4,6 +4,7 @@
 blue='\e[1;34m'
 red='\e[1;31m'
 white='\e[0;37m'
+verbose=0
 
 # Print usage message
 usage() {
@@ -15,6 +16,7 @@ Usage: $program_name <container_name> [options]
 Options:
     --help, -h              Show this message
     --command, -c <cmd>     Execute a single command and exit
+    --verbose, -v <cmd>     Show additional informational messages
     
 Arguments:
     container_name    Name or ID of the container to attach to
@@ -27,6 +29,17 @@ check_docker() {
         echo -e "${red}Error: Docker is not running${white}"
         exit 1
     fi
+}
+
+# Echo if verbose is true
+echo_if_verbose() {
+    local message="$1"
+
+    if [ "$verbose" != "1" ]; then
+	return
+    fi
+
+    echo -e "$message"
 }
 
 # Attach to container
@@ -85,24 +98,24 @@ attach_container() {
         container_name=$(echo "$matching_containers" | head -n1)
     fi
     
-    echo -e "${blue}Attempting to connect to container: $container_name${white}"
+    echo_if_verbose "${blue}Attempting to connect to container: $container_name${white}"
 
     if [ -n "$command" ]; then
         # Execute single command
         if docker exec -it "$container_name" which bash >/dev/null 2>&1; then
-            echo -e "${blue}Executing command with bash...${white}"
+            echo_if_verbose "${blue}Executing command with bash...${white}"
             docker exec -it "$container_name" bash -c "$command"
         else
-            echo -e "${blue}Executing command with sh...${white}"
+            echo_if_verbose "${blue}Executing command with sh...${white}"
             docker exec -it "$container_name" sh -c "$command"
         fi
     else
         # Interactive shell
         if docker exec -it "$container_name" which bash >/dev/null 2>&1; then
-            echo -e "${blue}Connecting with bash...${white}"
+            echo_if_verbose "${blue}Connecting with bash...${white}"
             docker exec -it "$container_name" bash
         else
-            echo -e "${blue}Bash not found, connecting with sh...${white}"
+            echo_if_verbose "${blue}Bash not found, connecting with sh...${white}"
             docker exec -it "$container_name" sh
         fi
     fi
@@ -125,6 +138,10 @@ main() {
                     exit 1
                 fi
                 command="$1"
+                shift
+                ;;
+            --verbose|-v)
+                verbose=1
                 shift
                 ;;
             *)

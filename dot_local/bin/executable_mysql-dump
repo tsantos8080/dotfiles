@@ -19,6 +19,7 @@ Options:
     --suffix        Add a custom suffix to the dump file name
     --container     Specify MySQL container name
     --database      Specify database name
+    --restore       Restore a database from a dump file
     
 Example:
     $program_name --database=mydatabase --suffix="pre-deploy" --container="my-mysql"
@@ -251,6 +252,41 @@ list_dumps() {
     done
 }
 
+# Restore a database from a dump file
+restore() {
+    # Ask for a dump from list
+    echo -e "${yellow}Please select a dump file to restore:${white}"
+    local dumps=($(ls -1 "${HOME}/database-dumps"/*.sql 2>/dev/null))
+    select dump in "${dumps[@]}"; do
+	if [ -n "$dump" ]; then
+	    echo -e "${green}Selected dump: $dump${white}"
+	    break
+	else
+	    echo -e "${red}Invalid selection${white}"
+	fi
+    done
+
+    # Select container
+    select_mysql_container
+
+    # Get credentials
+    get_credentials
+
+    # Restore the database
+    local db_name=$(basename "$dump" .sql)
+    local db_name=${db_name%%-*}
+
+    echo -e "${green}Restoring database '$db_name' from dump file '$dump'...${white}"
+
+    if docker exec -i $MYSQL_CONTAINER \
+	/usr/bin/mysql -u "$DB_USERNAME" --password="$DB_PASSWORD" "$db_name" < "$dump"; then
+	echo -e "${green}Successfully restored database from dump file${white}"
+    else
+	echo -e "${red}Error: Database restore failed${white}"
+	exit 1
+    fi
+}
+
 main() {
     local database=""
     local suffix=""
@@ -262,6 +298,10 @@ main() {
             --help|-h)
                 usage
                 exit 0
+                ;;
+	    --restore)
+		restore
+		exit 0
                 ;;
 	    --list|-l)
                 list_dumps

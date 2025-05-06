@@ -28,10 +28,14 @@ EOF
 # Get MySQL credentials
 get_credentials() {
     # Ask for username
-    read -p "Enter root MySQL username: " DB_USERNAME
+    echo -n "Enter root MySQL username: "
+    read DB_USERNAME
     
     # Ask for password (hidden input)
-    read -s -p "Enter root MySQL password: " DB_PASSWORD
+    echo -n "Enter root MySQL password: "
+    stty -echo
+    read DB_PASSWORD
+    stty echo
     echo # New line after password input
     
     # Validate input

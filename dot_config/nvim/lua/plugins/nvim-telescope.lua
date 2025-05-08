@@ -39,9 +39,22 @@ return {
       end
 
       require('telescope.builtin').grep_string({
-	search = 'TODO|FIXME|BUG|HACK|XXX|OPTIMIZE|NOTE',
+        search = 'TODO|FIXME|BUG|HACK|XXX|OPTIMIZE|NOTE',
         search_dirs = files,
       })
     end, { desc = 'Find TODOs' })
+
+    vim.keymap.set('n', '<leader>fp', function()
+      require('telescope.builtin').live_grep({
+        additional_args = function()
+          return {
+            '--glob',
+            '!**/tests/**',
+            '--glob',
+            '!**/Tests/**',
+          }
+        end,
+      })
+    end, { desc = 'Live grep (ignoring tests)' })
   end,
 }

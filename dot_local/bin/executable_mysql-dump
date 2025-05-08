@@ -20,6 +20,7 @@ Options:
     --container     Specify MySQL container name
     --database      Specify database name
     --restore       Restore a database from a dump file
+    --restore-loop  Restore a database from a dump file in a loop
     
 Example:
     $program_name --database=mydatabase --suffix="pre-deploy" --container="my-mysql"
@@ -287,6 +288,49 @@ restore() {
     fi
 }
 
+restore_loop() {
+    # Ask for a dump from list
+    echo -e "${yellow}Please select a dump file to restore:${white}"
+    local dumps=($(ls -1 "${HOME}/database-dumps"/*.sql 2>/dev/null))
+    select dump in "${dumps[@]}"; do
+	if [ -n "$dump" ]; then
+	    echo -e "${green}Selected dump: $dump${white}"
+	    break
+	else
+	    echo -e "${red}Invalid selection${white}"
+	fi
+    done
+
+    # Select container
+    select_mysql_container
+
+    # Get credentials
+    get_credentials
+
+    # Do/while loop asking if the user want to repeat the restore
+    while true; do
+	# Restore the database
+	local db_name=$(basename "$dump" .sql)
+	local db_name=${db_name%%-*}
+
+	echo -e "${green}Restoring database '$db_name' from dump file '$dump'...${white}"
+
+	if docker exec -i $MYSQL_CONTAINER \
+	    /usr/bin/mysql -u "$DB_USERNAME" --password="$DB_PASSWORD" "$db_name" < "$dump"; then
+	    echo -e "${green}Successfully restored database from dump file${white}"
+	else
+	    echo -e "${red}Error: Database restore failed${white}"
+	    exit 1
+	fi
+
+	# Ask to press a key to continue or Ctrl+C to exit
+	echo -e "\n${yellow}Press any key to restore again or Ctrl+C to exit...${white}"
+
+	# Wait for user input
+	read
+    done
+}
+
 main() {
     local database=""
     local suffix=""
@@ -301,6 +345,10 @@ main() {
                 ;;
 	    --restore)
 		restore
+		exit 0
+                ;;
+	    --restore-loop)
+		restore_loop
 		exit 0
                 ;;
 	    --list|-l)

@@ -255,17 +255,8 @@ list_dumps() {
 
 # Restore a database from a dump file
 restore() {
-    # Ask for a dump from list
-    echo -e "${yellow}Please select a dump file to restore:${white}"
-    local dumps=($(ls -1 "${HOME}/database-dumps"/*.sql 2>/dev/null))
-    select dump in "${dumps[@]}"; do
-	if [ -n "$dump" ]; then
-	    echo -e "${green}Selected dump: $dump${white}"
-	    break
-	else
-	    echo -e "${red}Invalid selection${white}"
-	fi
-    done
+    # Select a dump from list
+    local dump=$(select_dump)
 
     # Select container
     select_mysql_container
@@ -288,18 +279,33 @@ restore() {
     fi
 }
 
-restore_loop() {
+select_dump() {
     # Ask for a dump from list
-    echo -e "${yellow}Please select a dump file to restore:${white}"
-    local dumps=($(ls -1 "${HOME}/database-dumps"/*.sql 2>/dev/null))
-    select dump in "${dumps[@]}"; do
-	if [ -n "$dump" ]; then
-	    echo -e "${green}Selected dump: $dump${white}"
-	    break
-	else
-	    echo -e "${red}Invalid selection${white}"
-	fi
-    done
+    local dump=$(find "$HOME/database-dumps" -type f -name "*.sql" | \
+        xargs -I {} bash -c 'echo "$(basename "{}" | grep -oE "[0-9]+" | head -n1):{}"' | \
+        sort -t':' -k1 -nr | \
+        cut -d':' -f2- | \
+        fzf \
+        --header="Please select a dump file to restore" \
+        --preview 'f=$(basename {}); 
+            n="${f%.sql}"; 
+            db=${n%%-*}; 
+            ts_suffix=${n#*-}; 
+            ts=$(echo "$ts_suffix" | grep -oE "^[0-9]+" | head -n1); 
+            rest=${n#*-$ts-}; 
+            suffix=$( [ "$rest" != "$n" ] && echo "$rest" || echo "" ); 
+            d=$(TZ=America/Sao_Paulo date -d "@$ts" "+%Y-%m-%d %H:%M:%S"); 
+            printf "Date: %s\nDatabase: %s\nSuffix: %s\n" "$d" "$db" "$suffix"' \
+        --preview-window=right,60% \
+        --select-1 \
+        --exit-0)
+
+    echo $dump
+}
+
+restore_loop() {
+    # Select a dump from list
+    local dump=$(select_dump)
 
     # Select container
     select_mysql_container

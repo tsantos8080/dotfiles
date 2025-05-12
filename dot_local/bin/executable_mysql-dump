@@ -6,6 +6,13 @@ red='\e[1;31m'
 white='\e[0;37m'
 yellow='\e[1;33m'
 
+# Global variables
+DB_USERNAME=""
+DB_PASSWORD=""
+MYSQL_CONTAINER=""
+DATABASE=""
+SUFFIX=""
+
 # Print usage message
 usage() {
     local program_name
@@ -165,64 +172,6 @@ dump_database() {
     fi
 }
 
-main() {
-    local database=""
-    local suffix=""
-    local container=""
-    
-    # Parse arguments
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            --help|-h)
-                usage
-                exit 0
-                ;;
-            --suffix=*)
-                suffix="${1#*=}"
-                shift
-                ;;
-            --suffix)
-                suffix="$2"
-                shift 2
-                ;;
-            --container=*)
-                container="${1#*=}"
-                shift
-                ;;
-            --container)
-                container="$2"
-                shift 2
-                ;;
-            --database=*)
-                database="${1#*=}"
-                shift
-                ;;
-            --database)
-                database="$2"
-                shift 2
-                ;;
-            *)
-                echo -e "${red}Error: Unknown argument $1${white}"
-                usage
-                exit 1
-                ;;
-        esac
-    done
-
-    # First select the container
-    select_mysql_container "$container"
-
-    # Then ask for credentials
-    get_credentials
-
-    # Next select the database
-    select_database "$database"
-
-    # Finally, execute the dump
-    ensure_dumps_dir
-    dump_database "$suffix"
-}
-
 list_dumps() {
     local dumps_dir="${HOME}/database-dumps"
     
@@ -258,8 +207,14 @@ restore() {
     # Select a dump from list
     local dump=$(select_dump)
 
+    # Fail if no dump was selected
+    if [ -z "$dump" ]; then
+	echo -e "${red}Error: No dump file selected${white}" >&2
+	exit 1
+    fi
+
     # Select container
-    select_mysql_container
+    select_mysql_container "$MYSQL_CONTAINER"
 
     # Get credentials
     get_credentials
@@ -307,8 +262,14 @@ restore_loop() {
     # Select a dump from list
     local dump=$(select_dump)
 
+    # Fail if no dump was selected
+    if [ -z "$dump" ]; then
+	echo -e "${red}Error: No dump file selected${white}" >&2
+	exit 1
+    fi
+
     # Select container
-    select_mysql_container
+    select_mysql_container "$MYSQL_CONTAINER"
 
     # Get credentials
     get_credentials
@@ -338,16 +299,28 @@ restore_loop() {
 }
 
 main() {
-    local database=""
-    local suffix=""
-    local container=""
-    
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --help|-h)
                 usage
                 exit 0
+                ;;
+	    --list|-l)
+                list_dumps
+                exit 0
+                ;;
+            --suffix)
+                SUFFIX="$2"
+                shift 2
+                ;;
+            --container)
+		MYSQL_CONTAINER="$2"
+                shift 2
+                ;;
+            --database)
+		DATABASE="$2"
+                shift 2
                 ;;
 	    --restore)
 		restore
@@ -357,34 +330,6 @@ main() {
 		restore_loop
 		exit 0
                 ;;
-	    --list|-l)
-                list_dumps
-                exit 0
-                ;;
-            --suffix=*)
-                suffix="${1#*=}"
-                shift
-                ;;
-            --suffix)
-                suffix="$2"
-                shift 2
-                ;;
-            --container=*)
-                container="${1#*=}"
-                shift
-                ;;
-            --container)
-                container="$2"
-                shift 2
-                ;;
-            --database=*)
-                database="${1#*=}"
-                shift
-                ;;
-            --database)
-                database="$2"
-                shift 2
-                ;;
             *)
                 echo -e "${red}Error: Unknown argument $1${white}"
                 usage
@@ -392,12 +337,19 @@ main() {
                 ;;
         esac
     done
-    
+
+    # First select the container
+    select_mysql_container "$MYSQL_CONTAINER"
+
+    # Then ask for credentials
     get_credentials
-    select_mysql_container "$container"
-    select_database "$database"
+
+    # Next select the database
+    select_database "$DATABASE"
+
+    # Finally, execute the dump
     ensure_dumps_dir
-    dump_database "$suffix"
+    dump_database "$SUFFIX"
 }
 
 main "$@"

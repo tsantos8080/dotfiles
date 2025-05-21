@@ -22,7 +22,7 @@ vim.api.nvim_set_keymap('v', '<', '<gv', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '>', '>gv', { noremap = true, silent = true })
 
 -- Switch to the most recent buffer
-vim.api.nvim_set_keymap('n', '<tab>', ':buffer #<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader><tab>', ':buffer #<CR>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<leader>t', ':lua require("scripts").run_test()<cr>', {})
 

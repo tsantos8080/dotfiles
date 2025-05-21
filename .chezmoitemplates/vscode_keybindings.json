@@ -276,12 +276,12 @@
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
     { // Open file
-        "key": "space f o",  // 'f' for file, 'o' for open
+        "key": "space shift+f",  // 'F' for file
         "command": "workbench.action.files.openFile",
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
     { // Open recent
-        "key": "space f r",  // 'f' for file, 'r' for recent
+        "key": "space shift+d",  // 'D' for directory
         "command": "workbench.action.openRecent",
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
@@ -291,7 +291,7 @@
         "when": "(vim.mode == 'Normal' && editorTextFocus) || (!inputFocus)"
     },
     { // List open editors
-        "key": "space f b",
+        "key": "space f o",
         "command": "workbench.action.showAllEditors",
         "when": "vim.mode == 'Normal' && editorTextFocus"
     },

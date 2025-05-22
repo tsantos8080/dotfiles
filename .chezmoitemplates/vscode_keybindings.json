@@ -8,7 +8,7 @@
     { // Inline edit (Cursor)
         "key": "space e",
         "command": "aipopup.action.modal.generate",
-        "when": "(vim.mode == 'Normal' || vim.mode == 'VisualLine') && editorTextFocus && aichatPosition",
+        "when": "(vim.mode == 'Normal' || vim.mode == 'VisualLine') && editorTextFocus",
     },
     { // Open chat (VSCode)
         "key": "alt+a",

@@ -105,13 +105,30 @@ get_hot_files() {
     fi
     
     # Format and display output
-    echo -e "Count | File                                                                    | Top Author"
-    echo -e "----------------------------------------------------------------------------------------"
+    local max_file_length=65
+    local max_author_length=20
+    echo -e "Count | File                                                              |Top Author"
+    echo -e "--------------------------------------------------------------------------------------------"
     
     while read -r count file; do
         # Get the author with most modifications for this file
         top_author=$(git log --format="%an" -- "$file" | sort | uniq -c | sort -nr | head -n1 | awk '{$1=""; print substr($0,2)}')
-        printf "  %4d | %-70s | %s\n" "$count" "$file" "$top_author"
+        
+        # Truncate file name if too long (keeping the end)
+        if [[ ${#file} -gt $max_file_length ]]; then
+            truncated_file="...${file:$((${#file} - $max_file_length + 3))}"
+        else
+            truncated_file="$file"
+        fi
+
+        # Truncate author name if too long (keeping the end)
+        if [[ ${#top_author} -gt $max_author_length ]]; then
+            truncated_author="...${top_author:$((${#top_author} - $max_author_length + 3))}"
+        else
+            truncated_author="$top_author"
+        fi
+        
+        printf "%5d | %-65s | %-20s\n" "$count" "$truncated_file" "$truncated_author"
     done < "$temp_file"
     
     rm "$temp_file"

@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-# git-hotfiles - Shows the most frequently modified files in a Git repository
 
 # Output colors
 red='\e[1;31m'
@@ -89,26 +88,33 @@ get_hot_files() {
     echo -e "\nMost frequently modified files:"
     
     local result
+    local temp_file=$(mktemp)
+    
+    # Get file modifications count
     if [[ -n "$path_filter" ]]; then
-        # Apply path filter with grep, ensuring it matches at the beginning of the path
-        # Adding ^ to ensure it only matches at the beginning of the path
-        result=$(eval "$git_cmd" | grep -v "^$" | grep -E "^$path_filter" | sort | uniq -c | sort -nr | head -n "$limit")
+        eval "$git_cmd" | grep -v "^$" | grep -E "^$path_filter" | sort | uniq -c | sort -nr | head -n "$limit" > "$temp_file"
     else
-        # No path filter
-        result=$(eval "$git_cmd" | grep -v "^$" | sort | uniq -c | sort -nr | head -n "$limit")
+        eval "$git_cmd" | grep -v "^$" | sort | uniq -c | sort -nr | head -n "$limit" > "$temp_file"
     fi
     
     # Check if we have results
-    if [[ -z "$result" ]]; then
+    if [[ ! -s "$temp_file" ]]; then
+        rm "$temp_file"
         echo -e "${yellow}Warning: No results found with applied filters.${white}"
         return 1
     fi
     
     # Format and display output
-    echo -e "Count | File"
-    echo -e "------------------"
-    echo "$result" | awk '{printf "  %4d | %s\n", $1, $2}'
+    echo -e "Count | File                                                                    | Top Author"
+    echo -e "----------------------------------------------------------------------------------------"
     
+    while read -r count file; do
+        # Get the author with most modifications for this file
+        top_author=$(git log --format="%an" -- "$file" | sort | uniq -c | sort -nr | head -n1 | awk '{$1=""; print substr($0,2)}')
+        printf "  %4d | %-70s | %s\n" "$count" "$file" "$top_author"
+    done < "$temp_file"
+    
+    rm "$temp_file"
     return 0
 }
 

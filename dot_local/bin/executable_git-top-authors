@@ -1,0 +1,169 @@
+#!/usr/bin/env zsh
+
+# Output colors
+red='\e[1;31m'
+green='\e[1;32m'
+yellow='\e[1;33m'
+blue='\e[1;34m'
+white='\e[0;37m'
+
+usage() {
+    program_name=$(basename "$0")
+    cat <<EOF
+Usage: $program_name [options]
+Shows the most active authors in a Git repository.
+
+Options:
+    -h, --help               Show this message
+    -p, --path PREFIX        Filter commits by path
+    -n, --limit NUMBER       Limit output to N most active authors (default: 10)
+    -s, --since DATE        Consider only commits after specified date
+    
+Examples:
+    $program_name                            # Show 10 most active authors
+    $program_name -n 20                      # Show 20 most active authors
+    $program_name -p "src/"                  # Show authors only in src/ directory
+    $program_name -s "2023-01-01"            # Show authors active since Jan 1, 2023
+EOF
+}
+
+check_dependencies() {
+    local dependencies=("git" "grep" "sort" "sed" "awk")
+    local missing_deps=()
+
+    for dep in "${dependencies[@]}"; do
+        if ! command -v "$dep" &> /dev/null; then
+            missing_deps+=("$dep")
+        fi
+    done
+
+    if [[ ${#missing_deps[@]} -gt 0 ]]; then
+        echo -e "${red}Error: Missing dependencies: ${missing_deps[*]}${white}"
+        echo "Please install them before running this script."
+        exit 1
+    fi
+}
+
+check_git_repo() {
+    if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+        echo -e "${red}Error: Not a Git repository${white}"
+        exit 1
+    fi
+}
+
+get_top_authors() {
+    local path_filter="$1"
+    local limit="$2"
+    local since_date="$3"
+    
+    # Build git command
+    local git_cmd="git log --format='%an'"
+    
+    # Add filters
+    if [[ -n "$path_filter" ]]; then
+        git_cmd+=" -- \"$path_filter\""
+    fi
+    
+    if [[ -n "$since_date" ]]; then
+        git_cmd+=" --since=\"$since_date\""
+    fi
+    
+    # Show applied filters
+    echo -e "${blue}Searching for most active authors...${white}"
+    if [[ -n "$path_filter" ]]; then
+        echo -e "${blue}Path filter: $path_filter${white}"
+    fi
+    if [[ -n "$since_date" ]]; then
+        echo -e "${blue}Considering commits since: $since_date${white}"
+    fi
+    echo -e "${blue}Limit: $limit authors${white}"
+    
+    echo -e "\nMost active authors:"
+    echo -e "Commits │ Files    │ Author"
+    echo -e "────────┼──────────┼───────────────────────────────"
+    
+    local temp_file=$(mktemp)
+    
+    # Process each author
+    eval "$git_cmd" | sort | uniq -c | sort -nr | head -n "$limit" | while read -r commits author; do
+        # Get number of files modified by this author
+        local files_changed=''
+        if [[ -n "$path_filter" ]]; then
+            files_changed=$(git log --author="$author" --name-only --pretty=format: -- "$path_filter" | sort -u | wc -l)
+        else
+            files_changed=$(git log --author="$author" --name-only --pretty=format: | sort -u | wc -l)
+        fi
+        
+        printf "%7d │ %8d │ %s\n" "$commits" "$files_changed" "$author"
+    done
+    
+    rm -f "$temp_file"
+}
+
+main() {
+    # Default values
+    local path_filter=""
+    local limit=10
+    local since_date=""
+    
+    # Process arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            -p|--path)
+                if [[ -n "$2" && "$2" != -* ]]; then
+                    path_filter="$2"
+                    shift 2
+                else
+                    echo -e "${red}Error: Missing argument for $1${white}"
+                    exit 1
+                fi
+                ;;
+            -n|--limit)
+                if [[ -n "$2" && "$2" != -* ]]; then
+                    if [[ "$2" =~ ^[0-9]+$ ]]; then
+                        limit="$2"
+                        shift 2
+                    else
+                        echo -e "${red}Error: Invalid value for $1: $2 (must be an integer)${white}"
+                        exit 1
+                    fi
+                else
+                    echo -e "${red}Error: Missing argument for $1${white}"
+                    exit 1
+                fi
+                ;;
+            -s|--since)
+                if [[ -n "$2" && "$2" != -* ]]; then
+                    # Let Git validate the date format
+                    if ! git log --since="$2" &> /dev/null; then
+                        echo -e "${red}Error: Invalid date format for $1: $2${white}"
+                        exit 1
+                    fi
+                    since_date="$2"
+                    shift 2
+                else
+                    echo -e "${red}Error: Missing argument for $1${white}"
+                    exit 1
+                fi
+                ;;
+            *)
+                echo -e "${red}Error: Unknown option: $1${white}"
+                echo "Use --help to see available options."
+                exit 1
+                ;;
+        esac
+    done
+    
+    get_top_authors "$path_filter" "$limit" "$since_date"
+}
+
+# Run initial checks
+check_dependencies
+check_git_repo
+
+# Start the script
+main "$@"

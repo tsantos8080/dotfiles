@@ -1,0 +1,66 @@
+#!/usr/bin/env zsh
+
+token=$JIRA_API_TOKEN
+
+response=$(curl --location 'https://melhorenvio.atlassian.net/rest/api/3/search/jql?jql=statusCategory%20NOT%20IN%20(%22Done%22)%20AND%20assignee%3DcurrentUser()%20ORDER%20BY%20updated%20DESC&fields=summary%2Cdescription%2Ccreated%2Cupdated' \
+--header 'Accept: application/json' \
+--header "Authorization: Basic $token")
+
+export JIRA_RESPONSE="$response"
+
+format_issue='
+  .issues[] 
+  | select(.key == $key)
+  | .key + ": " + .fields.summary + "\n" +
+    "created: " + .fields.created + "\n" +
+    "updated: " + .fields.updated + "\n\n" +
+    ([.fields.description.content[]
+    | if .type == "bulletList" then
+        [.content[]
+        | "• " + ([.. | objects | select(.type == "text") | .text] | join(" "))]
+        | join("\n")
+      elif .type == "paragraph" then
+        [.. | objects | select(.type == "text" or .type == "mention") | if .type == "mention" then .attrs.text else .text end]
+        | join(" ")
+      else empty
+      end
+    | select(. != null and . != "")
+    | gsub("\\n\\s+"; "\n")
+    | gsub(" +"; " ")]
+    | join("\n\n"))
+'
+
+preview_cmd="echo \$JIRA_RESPONSE | jq -r --arg key \"\$(echo {} | cut -d':' -f1)\" '$format_issue'"
+
+selected_line=$(echo "$response" | jq -r '.issues[] | "\(.key): \(.fields.summary)"' | fzf \
+  --preview "$preview_cmd" \
+  --preview-window=right:70%:wrap)
+
+if [ -z "$selected_line" ]; then
+  exit 1
+fi
+
+selected_key=$(echo "$selected_line" | cut -d':' -f1)
+description=$(echo "$(echo "$selected_key" | tr '[:lower:]' '[:upper:]')-$(echo "$selected_line" | cut -d':' -f2- | iconv -f utf8 -t ascii//TRANSLIT | sed 's/^ //' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9 ]//g' | tr ' ' '-' | tr -s '-' | tr -d '\n')")
+
+# Define branch types with descriptions
+branch_types="feat: New feature
+fix: Bug fix
+docs: Documentation
+style: Code formatting
+refactor: Code refactoring
+test: Tests
+chore: General tasks
+perf: Performance improvements
+build: Build changes
+ci: CI changes
+revert: Revert commit"
+
+# Select branch type
+selected_type=$(echo "$branch_types" | fzf --height=40% --prompt="Select branch type: " | cut -d':' -f1)
+
+if [ -z "$selected_type" ]; then
+  exit 1
+fi
+
+git checkout -b "$selected_type/$description"

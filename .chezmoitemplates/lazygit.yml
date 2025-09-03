@@ -1,3 +1,7 @@
 gui:
   language: en
   skipNoStagedFilesWarning: true
+
+git:
+  localBranchSortOrder: recency
+

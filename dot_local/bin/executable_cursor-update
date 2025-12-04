@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+wget -O /tmp/cursor.deb "https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/latest"
+sudo dpkg -i /tmp/cursor.deb
+rm -rf /tmp/cursor.deb
+

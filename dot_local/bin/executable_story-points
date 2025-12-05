@@ -1,0 +1,129 @@
+#!/usr/bin/env zsh
+
+# Output colors
+red='\e[1;31m'
+green='\e[1;32m'
+white='\e[0;37m'
+
+usage() {
+    program_name=$(basename "$0")
+    cat <<EOF
+Usage: $program_name --sprint-points <points> --task-points <points> [--start-date YYYY-MM-DD]
+
+Calculates business days and hours equivalent to story points.
+Optionally calculates estimated end date if a start date is provided.
+
+Parameters:
+    --sprint-points   Total story points in the sprint
+    --task-points     Story points of the current task
+    --start-date      Task start date (YYYY-MM-DD)
+    -h, --help        Show this message
+
+Rules:
+- Sprint = 10 business days
+- 1 business day = 8 hours
+EOF
+}
+
+add_business_days() {
+    start_date="$1"
+    days_to_add="$2"
+
+    current_date="$start_date"
+    added_days=0
+
+    while [ $added_days -lt $days_to_add ]; do
+        current_date=$(date -I -d "$current_date + 1 day")
+        weekday=$(date -d "$current_date" '+%u')  # 1=Mon,7=Sun
+
+        if [ $weekday -lt 6 ]; then
+            added_days=$((added_days + 1))
+        fi
+    done
+
+    echo "$current_date"
+}
+
+calculate() {
+    sprint_points="$1"
+    task_points="$2"
+    start_date="$3"
+
+    if [ -z "$sprint_points" ] || [ -z "$task_points" ]; then
+        echo -e "${red}Error: You must provide --sprint-points and --task-points.${white}"
+        usage
+        exit 1
+    fi
+
+    sprint_days=10
+
+    # Floating number of days the task represents
+    task_days_float=$(echo "scale=4; ($task_points / $sprint_points) * $sprint_days" | bc)
+
+    # Integer days
+    task_days_int=$(echo "$task_days_float / 1" | bc)
+
+    # Remaining hours in the fractional part
+    fraction=$(echo "scale=4; $task_days_float - $task_days_int" | bc)
+    task_hours_remaining=$(echo "($fraction * 8 + 0.5) / 1" | bc)
+
+    # Total hours
+    task_hours_total=$(echo "($task_days_float * 8) + 0.5" | bc)
+    task_hours_total=$(echo "$task_hours_total / 1" | bc)
+
+    # Build display text
+    if [ "$task_days_int" -gt 0 ] && [ "$task_hours_remaining" -gt 0 ]; then
+	equivalent="${task_days_int} days, ${task_hours_remaining} hours (${task_hours_total} hours)"
+    elif [ "$task_days_int" -gt 0 ]; then
+	equivalent="${task_days_int} days (${task_hours_total} hours)"
+    else
+	equivalent="${task_hours_remaining} hours (${task_hours_total} hours)"
+    fi
+
+    echo -e "${green}Results:${white}"
+    echo "---------------------------"
+    echo "Sprint story points:       $sprint_points"
+    echo "Task story points:         $task_points"
+    echo "Equivalent time:           $equivalent"
+
+    if [ -n "$start_date" ]; then
+        end_date=$(add_business_days "$start_date" "$task_days_int")
+        echo "Estimated end date:        $end_date"
+    else
+        echo "Estimated end date:        (provide --start-date to calculate)"
+    fi
+
+    echo "---------------------------"
+}
+
+main() {
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --sprint-points)
+                sprint_points="$2"
+                shift 2
+                ;;
+            --task-points)
+                task_points="$2"
+                shift 2
+                ;;
+            --start-date)
+                start_date="$2"
+                shift 2
+                ;;
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            *)
+                echo -e "${red}Error: Unknown argument: $1${white}"
+                usage
+                exit 1
+                ;;
+        esac
+    done
+
+    calculate "$sprint_points" "$task_points" "$start_date"
+}
+
+main "$@"

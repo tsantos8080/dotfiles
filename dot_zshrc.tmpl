@@ -35,3 +35,55 @@ alias lg='lazygit'
 alias start-ssh-agent='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_rsa'
 alias gfd='git commit --allow-empty -m "build: forçar nova tentativa de deploy"'
 
+# Conectar o Claude Code de forma inteligente, segura e sem perguntas redundantes
+claude-connect() {
+    # 1. Seleciona o container ativo usando fzf
+    local CONTAINER=$(docker ps --format "{{.Names}} ({{.Image}})" | fzf --height 40% --reverse --prompt="Selecione o container para o Claude: " | awk '{print $1}')
+
+    if [ -z "$CONTAINER" ]; then
+        echo "Nenhum container selecionado."
+        return 1
+    fi
+
+    echo "Preparando container: $CONTAINER..."
+
+    # 2. Garante que o Claude está instalado usando ROOT (-u 0) em segundo plano (silencioso)
+    docker exec -u 0 "$CONTAINER" bash -c "command -v claude >/dev/null 2>&1 || npm install -g @anthropic-ai/claude-code"
+
+    # 3. Cria a pasta temporária do Claude no container e dá permissão total de escrita para o usuário comum
+    docker exec -u 0 "$CONTAINER" mkdir -p /tmp/claude-home/.claude
+    docker exec -u 0 "$CONTAINER" chmod -R 777 /tmp/claude-home
+
+    # 4. Envia as credenciais do seu host para a pasta do container
+    docker cp "$HOME/.claude/settings.json" "$CONTAINER:/tmp/claude-home/.claude/settings.json" 2>/dev/null
+    docker cp "$HOME/.claude/.credentials.json" "$CONTAINER:/tmp/claude-home/.claude/.credentials.json" 2>/dev/null
+    [ -f "$HOME/.claude.json" ] && docker cp "$HOME/.claude.json" "$CONTAINER:/tmp/claude-home/.claude.json" 2>/dev/null
+
+    # Desativa o auto-update do Claude no container para sumir com o aviso de permissão do npm
+    docker exec -u 0 "$CONTAINER" bash -c "node -e \"
+      const fs = require('fs');
+      const file = '/tmp/claude-home/.claude/settings.json';
+      let settings = {};
+      try { settings = JSON.parse(fs.readFileSync(file, 'utf8')); } catch(e) {}
+      settings.autoUpdate = false;
+      fs.writeFileSync(file, JSON.stringify(settings, null, 2));
+    \"" 2>/dev/null
+
+    # 5. Cria o atalho fake do binário para o Claude não reclamar de instalação corrompida
+    docker exec -u 0 "$CONTAINER" mkdir -p /tmp/claude-home/.local/bin
+    docker exec -u 0 "$CONTAINER" ln -sf /usr/local/bin/claude /tmp/claude-home/.local/bin/claude
+    docker exec -u 0 "$CONTAINER" chmod -R 777 /tmp/claude-home
+
+    # 6. Entra interativamente com o USUÁRIO PADRÃO do container
+    # Adicionadas as flags para pular as checagens de permissão do Git E a confirmação de confiança de pasta
+    echo "Conectando ao Claude..."
+    docker exec -it \
+      -e HOME=/tmp/claude-home \
+      "$CONTAINER" \
+      claude --dangerously-skip-permissions --trust-project "$@"
+
+    echo "Sessão do Claude Code encerrada no container. Seu host permanece intocado."
+}
+
+alias ccon="claude-connect"
+

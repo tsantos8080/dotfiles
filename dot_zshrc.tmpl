@@ -38,7 +38,7 @@ alias gfd='git commit --allow-empty -m "build: forçar nova tentativa de deploy"
 # Conectar o Claude Code de forma inteligente, segura e sem perguntas redundantes
 claude-connect() {
     # 1. Seleciona o container ativo usando fzf
-    local CONTAINER=$(docker ps --format "{{.Names}} ({{.Image}})" | fzf --height 40% --reverse --prompt="Selecione o container para o Claude: " | awk '{print $1}')
+    local CONTAINER=$(docker ps --format "{{ "{{" }}.Names{{ "}}" }} ({{ "{{" }}.Image{{ "}}" }})" | fzf --height 40% --reverse --prompt="Selecione o container para o Claude: " | awk '{print $1}')
 
     if [ -z "$CONTAINER" ]; then
         echo "Nenhum container selecionado."

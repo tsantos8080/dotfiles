@@ -1,6 +1,13 @@
 ---
 name: agent-browser
-description: Browser automation CLI for AI agents. Use when the user needs to explore or validate behavior in a web front end: navigate pages, fill forms, click buttons, take screenshots, extract data, see which API calls a screen makes (method, URL, status, payload), record traffic as HAR, or mock backend responses to see how the front end reacts. Triggers include "abre a página", "testa no front", "valida o comportamento no front", "o que essa tela chama", "quais requisições", "mocka a resposta", "tira um screenshot", "open a website", "test this web app", "fill out a form", "login to a site", exploratory testing and QA. Use only against local or staging environments.
+description: >-
+  Browser automation CLI for AI agents. Use when the user needs to explore or validate behavior in a
+  web front end: navigate pages, fill forms, click buttons, take screenshots, extract data, see which
+  API calls a screen makes (method, URL, status, payload), record traffic as HAR, or mock backend
+  responses to see how the front end reacts. Triggers include "abre a página", "testa no front",
+  "valida o comportamento no front", "o que essa tela chama", "quais requisições", "mocka a resposta",
+  "tira um screenshot", "open a website", "test this web app", "fill out a form", "login to a site",
+  exploratory testing and QA. Use only against local or staging environments.
 allowed-tools: Bash(agent-browser:*), Bash(npx agent-browser:*)
 ---
 

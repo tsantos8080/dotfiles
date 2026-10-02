@@ -1,6 +1,0 @@
-# TPM, the tmux plugin manager. The plugins themselves are listed in
-# dot_tmux.conf and installed by scripts/run_once_after_tmux-plugins.sh.tmpl.
-[".tmux/plugins/tpm"]
-    type = "git-repo"
-    url = "https://github.com/tmux-plugins/tpm"
-    refreshPeriod = "168h"

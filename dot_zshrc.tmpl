@@ -38,7 +38,7 @@ alias claude='claude --permission-mode auto'
 alias codex='codex --yolo'
 
 # `tmux` without arguments attaches to the running server if there is one,
-# otherwise starts tmux (and tmux-continuum restores the last saved sessions).
+# otherwise starts a new one.
 tmux() {
     if [ $# -gt 0 ]; then
         command tmux "$@"

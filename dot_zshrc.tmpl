@@ -37,6 +37,18 @@ alias lg='lazygit'
 alias claude='claude --permission-mode auto'
 alias codex='codex --yolo'
 
+# `tmux` without arguments attaches to the running server if there is one,
+# otherwise starts tmux (and tmux-continuum restores the last saved sessions).
+tmux() {
+    if [ $# -gt 0 ]; then
+        command tmux "$@"
+    elif [ -n "$TMUX" ]; then
+        echo "já está dentro do tmux"
+    else
+        command tmux attach 2>/dev/null || command tmux
+    fi
+}
+
 # glow wraps at a fixed width (80 by default); use the current window width.
 glow() {
     command glow -w "$(( ${COLUMNS:-84} - 4 ))" "$@"

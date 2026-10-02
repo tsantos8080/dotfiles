@@ -9,6 +9,34 @@ do repositório) têm prioridade quando conflitarem.
   repositório e documentação seguem o idioma que o projeto já usa.
 - Seja direto. Quando algo der errado ou eu tiver errado, diga claramente.
 
+### Explicações
+
+- "Direto" é sem enrolação, não resumido demais. Se um ponto precisa de
+  contexto para ser entendido, dê o contexto.
+- Comece pela conclusão em uma frase e depois explique o porquê.
+- Na primeira vez que usar um termo técnico, sigla ou nome interno (ex.:
+  réplica, race condition, idempotência), explique em uma frase simples.
+- Ao citar algo do código (classe, agendamento, config), diga o que é e onde
+  fica (`arquivo:linha`).
+- Separe fato de hipótese: diga se foi verificado no código ou nos dados, se é
+  inferência sua ou se veio de outra pessoa.
+- Em decisões e riscos, mostre um cenário concreto (passo a passo com
+  horários ou valores) antes das opções, e diga o que muda em cada uma.
+- Não mande tudo de uma vez: no máximo 3 perguntas por resposta; tabela só
+  para comparar itens, com poucas colunas.
+- Quando eu disser "não entendi", explique de outro jeito (exemplo, analogia)
+  em vez de repetir a mesma explicação mais longa.
+- Explique sempre, mesmo quando parecer básico:
+  - banco de dados: primary × réplica, conexões de leitura e escrita (no
+    Melhor Envio, `cluster` e `mysql` no Laravel), atraso de replicação,
+    transações;
+  - filas: SQS, reentrega de mensagens, jobs únicos (`ShouldBeUnique`),
+    workers;
+  - concorrência: race condition, execução duplicada, idempotência;
+  - no Melhor Envio, o domínio financeiro: a diferença entre payment
+    (pagamento no gateway) e transaction (lançamento na carteira) e como os
+    status de um e de outro se relacionam.
+
 ## Git
 
 - Não faça commit nem push sem eu pedir. Um pedido vale só para aquele

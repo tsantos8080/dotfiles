@@ -3,3 +3,9 @@ lazydocker = 'latest'
 lazygit = 'latest'
 node = 'latest'
 php = '8.4'
+"npm:diff-so-fancy" = "latest"
+"pipx:harlequin" = { version = "latest", extras = "mysql" }
+"pipx:posting" = "latest"
+python = "latest"
+"ubi:jorgerojas26/lazysql" = "latest"
+uv = "latest"

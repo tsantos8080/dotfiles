@@ -1,0 +1,19 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+  Claude Code also writes to this file (approved permissions, etc.), so
+  chezmoi only sets the keys below and keeps everything else as it is.
+  SONAR_TOKEN comes from the local chezmoi config (sonarToken in
+  ~/.config/chezmoi/chezmoi.toml) and never goes to git.
+*/ -}}
+{{- $settings := dict -}}
+{{- if .chezmoi.stdin | trim -}}
+{{-   $settings = fromJson .chezmoi.stdin -}}
+{{- end -}}
+{{- $settings = setValueAtPath "theme" "dark" $settings -}}
+{{- $settings = setValueAtPath "model" "opus" $settings -}}
+{{- $settings = setValueAtPath "skipDangerousModePermissionPrompt" true $settings -}}
+{{- $token := get . "sonarToken" -}}
+{{- if $token -}}
+{{-   $settings = setValueAtPath "env.SONAR_TOKEN" $token $settings -}}
+{{- end -}}
+{{ toPrettyJson $settings }}

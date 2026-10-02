@@ -2,6 +2,7 @@
 # Renders this chezmoi source into a temporary home (without running scripts or
 # touching the real home and chezmoi state) and validates the result:
 # - agent skills: frontmatter, names and Claude Code symlinks
+# - rendered JSON config files
 # - run_once scripts: syntax (bash -n / zsh -n) and shellcheck when available
 #
 # Usage: .github/scripts/validate.sh   (PYTHON=<python with pyyaml> to override)
@@ -27,11 +28,17 @@ fail() {
 }
 
 echo "== Rendering source for $(uname -s)"
-cz init --promptString 'Diretório do grafo do Logseq=~/Documents/Notes' > /dev/null
+cz init \
+	--promptString 'Diretório do grafo do Logseq=~/Documents/Notes' \
+	--promptString 'SONAR_TOKEN (Enter para pular)=' > /dev/null
 cz apply --exclude scripts --force
 
 echo "== Validating skills"
 "${PYTHON:-python3}" "$SRC/.github/scripts/validate_skills.py" "$DEST" || failures=$((failures + 1))
+
+echo "== Validating rendered JSON"
+"${PYTHON:-python3}" -m json.tool "$DEST/.claude/settings.json" > /dev/null \
+	&& echo "ok   .claude/settings.json" || fail ".claude/settings.json: invalid JSON"
 
 echo "== Validating scripts"
 while IFS= read -r rel; do

@@ -2,6 +2,8 @@ export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 export ZSH="$HOME/.oh-my-zsh"
 
+export EDITOR="nvim"
+
 ZSH_THEME="geoffgarside"
 
 plugins=(
@@ -75,12 +77,12 @@ claude-connect() {
     docker exec -u 0 "$CONTAINER" chmod -R 777 /tmp/claude-home
 
     # 6. Entra interativamente com o USUÁRIO PADRÃO do container
-    # Adicionadas as flags para pular as checagens de permissão do Git E a confirmação de confiança de pasta
+    # Pula as checagens de permissão do Claude
     echo "Conectando ao Claude..."
     docker exec -it \
       -e HOME=/tmp/claude-home \
       "$CONTAINER" \
-      claude --dangerously-skip-permissions --trust-project "$@"
+      claude --dangerously-skip-permissions "$@"
 
     echo "Sessão do Claude Code encerrada no container. Seu host permanece intocado."
 }

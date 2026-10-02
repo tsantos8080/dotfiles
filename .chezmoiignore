@@ -13,9 +13,6 @@ Library/
 scripts/linux/
 
 .config/flameshot
-.config/i3
-.config/i3blocks
-.config/picom
 
 
 {{ end }}

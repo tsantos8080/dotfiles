@@ -1,0 +1,48 @@
+# Instruções pessoais
+
+Valem para todos os projetos. Instruções do projeto (`CLAUDE.md` / `AGENTS.md`
+do repositório) têm prioridade quando conflitarem.
+
+## Comunicação
+
+- Responda em português do Brasil. Código, nomes, mensagens de commit do
+  repositório e documentação seguem o idioma que o projeto já usa.
+- Seja direto. Quando algo der errado ou eu tiver errado, diga claramente.
+
+## Git
+
+- Não faça commit nem push sem eu pedir. Um pedido vale só para aquele
+  conjunto de mudanças.
+- Use Conventional Commits.
+- Nunca use `--force` sem eu pedir explicitamente; quando pedir, prefira
+  `--force-with-lease`.
+
+## Segurança
+
+- Nunca mostre tokens, senhas ou chaves na resposta, em comandos ou em logs.
+  Para conferir se um segredo existe, mostre só o tamanho ou se está presente.
+- Comandos com `sudo` precisam da minha senha: me peça para rodar no meu
+  terminal em vez de tentar.
+{{- if eq .chezmoi.os "linux" }}
+- Nunca rode `pkill ssh-agent` (ou equivalente): derruba o agente do GNOME
+  Keyring. Se `SSH_AUTH_SOCK` estiver vazio, use o socket do keyring:
+  `SSH_AUTH_SOCK=/run/user/$(id -u)/keyring/ssh`.
+{{- end }}
+
+## Ambiente
+
+- Meus dotfiles são gerenciados pelo chezmoi em `~/.local/share/chezmoi`.
+  Para mudar um arquivo do home que o chezmoi gerencia, edite a fonte lá e
+  rode `chezmoi apply`; editar o arquivo do home direto é sobrescrito.
+  `chezmoi managed` lista o que é gerenciado.
+- Ferramentas de linha de comando vêm do mise (`~/.config/mise/config.toml`).
+  Prefira instalar por lá a usar apt/brew.
+- Skills pessoais ficam em `~/.agents/skills` (fonte:
+  `dot_agents/skills/` no chezmoi) e chegam ao Claude Code por links em
+  `~/.claude/skills`.
+- Minhas notas ficam no Logseq em `{{ get . "logseqDir" | default "~/Documents/Notes" }}`.
+
+## Antes de dizer que terminou
+
+- Rode a checagem que prova o que você está afirmando e leia a saída. Se algo
+  não pôde ser verificado, diga isso em vez de presumir que funcionou.

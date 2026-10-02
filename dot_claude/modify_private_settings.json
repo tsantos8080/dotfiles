@@ -10,7 +10,6 @@
 {{-   $settings = fromJson .chezmoi.stdin -}}
 {{- end -}}
 {{- $settings = setValueAtPath "theme" "dark" $settings -}}
-{{- $settings = setValueAtPath "model" "opus" $settings -}}
 {{- $settings = setValueAtPath "skipDangerousModePermissionPrompt" true $settings -}}
 {{- $token := get . "sonarToken" -}}
 {{- if $token -}}

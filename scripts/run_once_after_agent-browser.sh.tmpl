@@ -22,3 +22,16 @@ if [ "$has_chrome" = true ]; then
 else
 	mise exec -- agent-browser install
 fi
+
+# ffmpeg: agent-browser needs it to record videos of a browser session
+# (`agent-browser record start fluxo.webm`). Screenshots, network inspection
+# and mocks work without it.
+if which ffmpeg > /dev/null 2>&1; then
+	echo -e "\e[32mffmpeg is already installed. skipping...\e[0m"
+else
+	{{- if eq .chezmoi.os "darwin" }}
+	brew install ffmpeg
+	{{- else }}
+	sudo apt install -y ffmpeg
+	{{- end }}
+fi

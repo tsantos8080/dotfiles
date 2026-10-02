@@ -1,0 +1,24 @@
+{{- template "shebang" . }}
+
+# Runs after the mise script, so agent-browser is already installed.
+if ! mise which agent-browser > /dev/null 2>&1; then
+	echo -e "\e[33magent-browser is not installed by mise. skipping...\e[0m"
+	exit 0
+fi
+
+has_chrome=false
+{{- if eq .chezmoi.os "darwin" }}
+for app in "/Applications/Google Chrome.app" "/Applications/Chromium.app"; do
+	[ -d "$app" ] && has_chrome=true
+done
+{{- else }}
+for bin in google-chrome google-chrome-stable chromium chromium-browser; do
+	command -v "$bin" > /dev/null 2>&1 && has_chrome=true
+done
+{{- end }}
+
+if [ "$has_chrome" = true ]; then
+	echo -e "\e[32mChrome is already installed, agent-browser will use it. skipping...\e[0m"
+else
+	mise exec -- agent-browser install
+fi

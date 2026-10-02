@@ -48,7 +48,28 @@ Personal skills for Claude Code and Codex live in `~/.agents/skills` (source: `d
 | `refactor-sweep`                 | Reviews several merged commits/PRs together for leftovers, duplication, silent behavior changes and test gaps. | After a refactor or a series of PRs in the same area, or before a big deploy. | own                                                           |
 | `security-audit`                 | PHP/Laravel security audit focused on exploitable issues, mainly one account reaching another's data.         | Dedicated security reviews or before releasing a sensitive area.            | own                                                             |
 | `simplify`                       | Simplifies recently changed code without changing behavior, one change at a time with tests. Codex only (Claude Code ships its own `/simplify`). | After a feature works but the code feels heavy.                  | own                                                             |
+| `agent-browser`                  | Drives a separate Chrome from the CLI: navigate, click, fill, screenshot, list the API calls a screen makes, record HAR, mock responses. CLI installed via mise. | To explore or validate front-end behavior, mainly which endpoints a screen calls. Local/staging only. | [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser) (Apache-2.0, modified) |
 | `humanizer`                      | Rewrites AI-sounding text so it reads like a person wrote it, without changing the facts.                     | Docs, PR descriptions, posts or messages that sound generated.              | [blader/humanizer](https://github.com/blader/humanizer) v3.1.0 (MIT) |
 | `reflect`                        | Reads recent Claude Code sessions, finds repeated manual work and suggests the lightest fix, or none.        | Occasionally (e.g. monthly) to tune skills, instructions and settings.      | adapted from [oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim) (MIT) |
 
 `start-task` writes to the Logseq graph set in `logseqDir` (asked once by `chezmoi init`, stored in `~/.config/chezmoi/chezmoi.toml`, default `~/Documents/Notes`).
+
+#### `agent-browser` examples
+
+```bash
+# Which endpoints does this screen call?
+agent-browser open http://localhost:8000/envios
+agent-browser snapshot                            # element refs like @e5
+agent-browser click @e5
+agent-browser network requests --type xhr,fetch   # method, URL, status
+agent-browser network request <id>                # headers and body
+
+# Record a flow, response bodies included
+agent-browser network har start
+agent-browser network har stop /tmp/fluxo.har
+
+# See how the front end reacts before the endpoint exists
+agent-browser network route "**/api/v2/envios" --body '{"data": [], "total": 0}'   # always status 200
+agent-browser network route "**/api/v2/checkout" --abort                          # network failure
+agent-browser close
+```

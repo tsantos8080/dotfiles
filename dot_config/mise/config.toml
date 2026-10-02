@@ -4,5 +4,6 @@ lazygit = 'latest'
 node = 'latest'
 php = '8.4'
 python = '3.12.2'
+"npm:agent-browser" = "latest"
 "npm:diff-so-fancy" = "latest"
 "ubi:agavra/tuicr" = { version = "latest", matching = "musl" }

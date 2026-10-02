@@ -9,7 +9,6 @@ Library/
 
 # Linux only
 scripts/linux/
-.local/bin/vscode-update
 
 .config/flameshot
 .config/i3

@@ -33,7 +33,3 @@ chezmoi init --apply https://github.com/tsantos8080/dotfiles.git
 | `r`                | Starts remote Flash (works in operator mode).                      |
 | `R`                | Starts Treesitter search in operator and visual modes.             |
 | `<c-s>`            | Toggles Flash search in command-line mode.                         |
-
-## TODO
-- [ ] Fix Mac VSCode keybindings
-

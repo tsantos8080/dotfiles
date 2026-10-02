@@ -1,0 +1,13 @@
+{{- template "shebang" . }}
+
+# Installs the tmux plugins listed in ~/.tmux.conf (tmux-resurrect and
+# tmux-continuum) through TPM, which chezmoi clones via .chezmoiexternal.toml.
+# Runs after the files are applied, so TPM and ~/.tmux.conf already exist.
+tpm="$HOME/.tmux/plugins/tpm"
+
+if [ ! -x "$tpm/bin/install_plugins" ]; then
+	echo -e "\e[33mTPM not found at $tpm. skipping...\e[0m"
+	exit 0
+fi
+
+"$tpm/bin/install_plugins"

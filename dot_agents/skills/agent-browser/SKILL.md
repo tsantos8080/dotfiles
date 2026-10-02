@@ -84,7 +84,7 @@ agent-browser network unroute          # remove the mocks
 # Evidence for a PR or a bug report
 agent-browser screenshot --annotate tela.png   # numbered labels matching the @eN refs
 agent-browser screenshot --full pagina.png     # full scroll height
-agent-browser record start fluxo.webm --cursor # needs ffmpeg installed
+agent-browser record start fluxo.webm --cursor # needs ffmpeg >= 5.1
 agent-browser record stop
 ```
 

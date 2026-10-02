@@ -15,4 +15,10 @@ python = '3.12.2'
 ripgrep = 'latest'
 "npm:agent-browser" = "latest"
 "npm:diff-so-fancy" = "latest"
+{{- if eq .chezmoi.os "linux" }}
+# ffmpeg for `agent-browser record`: it needs ffmpeg >= 5.1 (-fps_mode) and
+# Ubuntu 22.04 ships 4.4. Static build from BtbN (no macOS builds; macOS gets
+# ffmpeg from brew in the agent-browser run_once script).
+"ubi:BtbN/FFmpeg-Builds" = { version = "latest", matching = "linux64-gpl-8.1", exe = "ffmpeg" }
+{{- end }}
 "ubi:agavra/tuicr" = { version = "latest", matching = "musl" }

@@ -1,7 +1,7 @@
 {{- template "shebang" . }}
 
 if which nvim > /dev/null 2>&1; then
-	echo "\e[32mnvim is already installed. skipping...\e[0m"
+	echo -e "\e[32mnvim is already installed. skipping...\e[0m"
 else
 	{{- if eq .chezmoi.os "darwin" }}
 	brew install nvim pyvim ripgrep
@@ -16,7 +16,7 @@ fi
 
 {{ if eq .chezmoi.os "linux" -}}
 if ! nvm --version > /dev/null 2>&1; then
-	echo "\e[32mnvm is already installed. skipping...\e[0m"
+	echo -e "\e[32mnvm is already installed. skipping...\e[0m"
 else
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Start Task"
+  short_description: "Kick off a Jira task: grill, branch, draft PR, Jira and Logseq"
+policy:
+  allow_implicit_invocation: false

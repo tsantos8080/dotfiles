@@ -1,0 +1,3 @@
+{{- $logseqDir := promptStringOnce . "logseqDir" "Diretório do grafo do Logseq" "~/Documents/Notes" -}}
+[data]
+    logseqDir = {{ $logseqDir | quote }}

@@ -1,0 +1,131 @@
+---
+name: start-task
+description: Inicia uma tarefa do Jira - lê a tarefa e todos os comentários, entrevista o usuário com a skill grilling até o entendimento ficar claro, cria a branch (feat/ ou fix/ com a chave da tarefa), abre o PR em draft com gh, comenta o link do PR no Jira e registra a revisão como TODO no journal do Logseq. Use só quando o usuário chamar /start-task ou $start-task, ou pedir explicitamente para "iniciar a task" com esse fluxo.
+disable-model-invocation: true
+---
+
+# Iniciar tarefa do Jira
+
+Fluxo para começar uma tarefa: entender, alinhar e deixar tudo preparado
+(branch, PR em draft, Jira e Logseq) antes de escrever código.
+
+## 0. Pegue a tarefa
+
+Se o usuário não informou o link ou a chave da tarefa (ex.: `PTB-1234` ou
+`https://melhorenvio.atlassian.net/browse/PTB-1234`), peça antes de qualquer
+outra coisa. Extraia a chave do link.
+
+Confirme também que está no repositório certo (`git rev-parse --show-toplevel`)
+e que a árvore está limpa (`git status --short`). Se houver alterações não
+commitadas, pare e pergunte o que fazer com elas.
+
+## 1. Leia a tarefa no Jira (MCP)
+
+Use o MCP do Atlassian:
+
+1. obtenha o `cloudId` com `getAccessibleAtlassianResources`;
+2. leia a tarefa com `getJiraIssue`, incluindo descrição, critérios de aceite,
+   tipo, links e **todos os comentários**.
+
+Se o MCP do Atlassian não estiver disponível ou não autenticado, pare e avise o
+usuário. Não siga sem ler a tarefa.
+
+Depois de ler, olhe o código que a tarefa toca (rotas, classes, testes
+existentes) o suficiente para fazer boas perguntas. Não implemente nada.
+
+## 2. Entreviste o usuário (grilling)
+
+Use a skill `grilling` (`$grilling` no Codex) sobre o entendimento da tarefa.
+Ela pergunta em rodadas, com uma recomendação para cada pergunta, até não
+sobrar decisão em aberto. Cubra pelo menos:
+
+- o que exatamente precisa mudar e o que **não** faz parte da tarefa;
+- pontos ambíguos ou contraditórios entre descrição e comentários;
+- regras de negócio, casos de borda e dados existentes afetados;
+- como vamos saber que funcionou (testes, QA);
+- se é `feat` ou `fix`.
+
+Termine com um resumo curto do entendimento acordado.
+
+## 3. Confirme o plano de execução
+
+Antes de qualquer ação, mostre de uma vez e peça um "pode seguir":
+
+- **branch**: `feat/<CHAVE>-<descricao-em-kebab-case>` para funcionalidades ou
+  `fix/<CHAVE>-<descricao-em-kebab-case>` para correções. Descrição curta, sem
+  acentos, em minúsculas (ex.: `feat/PTB-1234-adiciona-validacao-de-cpf`);
+- **base**: a branch padrão do repositório
+  (`gh repo view --json defaultBranchRef -q .defaultBranchRef.name`), em geral
+  `main`;
+- **título do PR**: Conventional Commits em português, no formato
+  `tipo(escopo): descrição` (`escopo` é opcional, em minúsculas). Sem a chave
+  do Jira. Conciso e fácil de entender, sem jargão desnecessário
+  (ex.: `feat: adiciona validação de CPF no cadastro de clientes`);
+- o comentário que vai para o Jira e a linha que vai para o Logseq.
+
+Se o usuário ajustar algo, refaça o resumo. Depois do "pode seguir", execute as
+etapas 4 a 7 sem novas perguntas, a não ser que algo falhe.
+
+## 4. Crie a branch
+
+- Se a branch atual já é da tarefa (contém a chave), use-a e diga isso.
+- Senão, atualize a base e crie a branch a partir dela:
+  ```bash
+  git fetch origin <base>
+  git switch -c <branch> origin/<base>
+  ```
+- Se a branch já existir, local ou remota, pare e pergunte.
+
+## 5. Abra o PR em draft
+
+O GitHub não deixa abrir PR sem diferença em relação à base, então crie um
+commit vazio com o mesmo texto do título:
+
+```bash
+git commit --allow-empty -m "<título do PR>"
+git push -u origin <branch>
+```
+
+Monte o corpo do PR:
+
+- se existir `.github/pull_request_template.md`, use-o mantendo os títulos das
+  seções exatamente como estão. Preencha só "Qual a proposta do PR?" com um
+  resumo da tarefa e do entendimento acordado, e deixe as outras seções com o
+  texto de ajuda do template para completar no fim da tarefa;
+- sem template, escreva um parágrafo com a proposta.
+
+```bash
+gh pr create --draft --base <base> --head <branch> --title "<título>" --body-file <arquivo-temporário>
+```
+
+Guarde a URL que o `gh` devolver.
+
+## 6. Comente no Jira
+
+Adicione um comentário na tarefa com `addCommentToJiraIssue`:
+
+```
+PR em draft: <URL do PR>
+```
+
+## 7. Registre no Logseq
+
+- Arquivo do dia: `{{ get . "logseqDir" | default "~/Documents/Notes" }}/journals/$(date +%Y_%m_%d).md`.
+  Crie se não existir.
+- Se já houver uma linha com essa URL de PR, não duplique.
+- Acrescente no fim do arquivo, garantindo que a linha anterior termina com
+  quebra de linha:
+  ```markdown
+  - TODO Revisar [PR](<URL do PR>) da task [<CHAVE>](https://melhorenvio.atlassian.net/browse/<CHAVE>)
+  ```
+
+## 8. Resumo final
+
+Mostre em poucas linhas: branch criada, URL do PR, comentário no Jira e
+journal atualizado, e o resumo do entendimento da etapa 2. Se alguma etapa
+falhou, diga qual, o erro, e o que já foi feito, sem desfazer nada por conta
+própria.
+
+Quando a implementação terminar, o corpo do PR deve ser completado (no projeto
+do Melhor Envio, com a skill `send-task` ou `pr-template-automation`) e o PR
+marcado como pronto (`gh pr ready`).

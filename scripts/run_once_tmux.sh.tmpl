@@ -1,0 +1,11 @@
+{{- template "shebang" . }}
+
+if which tmux > /dev/null 2>&1; then
+	echo "\e[32mtmux is already installed. skipping...\e[0m"
+else
+	{{- if eq .chezmoi.os "darwin" }}
+	brew install tmux
+	{{- else }}
+	sudo apt install -y tmux
+	{{- end }}
+fi

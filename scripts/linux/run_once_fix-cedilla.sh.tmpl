@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+{{- template "shebang" . }}
 
 if ! grep -q "GTK_IM_MODULE=cedilla" /etc/environment; then
 	echo "GTK_IM_MODULE=cedilla" | sudo tee -a /etc/environment > /dev/null

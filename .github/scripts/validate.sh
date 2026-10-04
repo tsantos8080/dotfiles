@@ -40,6 +40,27 @@ echo "== Validating rendered JSON"
 "${PYTHON:-python3}" -m json.tool "$DEST/.claude/settings.json" > /dev/null \
 	&& echo "ok   .claude/settings.json" || fail ".claude/settings.json: invalid JSON"
 
+echo "== Validating pinned mise tools and shell configuration"
+"${PYTHON:-python3}" - "$DEST/.config/mise/config.toml" <<'PY'
+import re
+import sys
+import tomllib
+
+with open(sys.argv[1], "rb") as stream:
+    config = tomllib.load(stream)
+for tool, options in config["tools"].items():
+    version = options["version"] if isinstance(options, dict) else options
+    if not (re.fullmatch(r"\d+\.\d+\.\d+", version)
+            or re.fullmatch(r"autobuild-\d{4}-\d{2}-\d{2}-\d{2}-\d{2}", version)):
+        raise SystemExit(f"{tool}: expected pinned version, found {version}")
+print("ok   pinned mise versions")
+PY
+bash -n "$DEST/.bash_aliases"
+zsh -n "$DEST/.zshrc"
+
+echo "== Exercising bootstrap failure and repeat-install paths"
+"${PYTHON:-python3}" "$SRC/.github/scripts/test_bootstrap.py"
+
 echo "== Validating scripts"
 while IFS= read -r rel; do
 	file="$SRC/$rel"
@@ -57,10 +78,10 @@ while IFS= read -r rel; do
 	before=$failures
 	shebang="$(head -n 1 "$out")"
 	case "$shebang" in
-		*zsh*)
+		'#!/usr/bin/env zsh')
 			zsh -n "$out" || fail "$rel: zsh syntax error"
 			;;
-		*bash* | *sh*)
+		'#!/usr/bin/env bash' | '#!/usr/bin/bash' | '#!/bin/bash' | '#!/bin/sh')
 			bash -n "$out" || fail "$rel: bash syntax error"
 			if command -v shellcheck > /dev/null 2>&1; then
 				# SC1090: scripts source ~/.bashrc and ~/.zshrc on purpose; shellcheck

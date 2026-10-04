@@ -1,31 +1,20 @@
 {{- template "shebang" . }}
-set -e
-
-if which mise > /dev/null 2>&1; then
+if command -v mise > /dev/null 2>&1; then
 	echo -e "\e[32mmise is already installed. skipping...\e[0m"
 else
 	{{- if eq .chezmoi.os "darwin" }}
 	brew install mise
 	{{- else }}
-	curl https://mise.run | sh
+	installer=$(mktemp)
+	trap 'rm -f "$installer"' EXIT
+	curl -fsSL https://mise.run -o "$installer"
+	MISE_VERSION=v2026.10.0 sh "$installer"
 	{{- end }}
 
 fi
 
-# PHP dependencies
-
-	{{- if eq .chezmoi.os "darwin" }}
-	brew install autoconf gmp libsodium bison re2c libxml2 pkgconf libgd libiconv libzip icu4c
-	{{- else }}
-	sudo apt install -y build-essential autoconf bison re2c pkg-config libxml2-dev libssl-dev libsqlite3-dev \
-		sqlite3 libcurl4-openssl-dev curl libgd-dev libonig-dev libpq-dev \
-		libreadline-dev libzip-dev libicu-dev
-	{{- end }}
-
-export PATH="$HOME/.local/bin:$PATH"
-
 # Configure
-mise trust ${PWD}
+mise trust "$HOME/.config/mise/config.toml"
 
 {{- if eq .chezmoi.os "darwin" }}
 PHP_CONFIGURE_OPTIONS="--with-iconv=$(brew --prefix libiconv) --with-openssl=$(brew --prefix openssl)" \
@@ -34,4 +23,4 @@ PHP_CONFIGURE_OPTIONS="--with-iconv=$(brew --prefix libiconv) --with-openssl=$(b
 mise install --yes
 {{- end }}
 
-echo -e "\033[33mPlease run 'source ~/.zshrc' manually for the changes to take effect.\033[0m"
+echo '[dotfiles] Ferramentas instaladas. Abra um novo terminal para ativar o shell.'

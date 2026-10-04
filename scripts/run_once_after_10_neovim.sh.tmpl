@@ -1,0 +1,6 @@
+{{- template "shebang" . }}
+
+# Install the Python provider into the Python selected by mise, not system Python.
+mise exec -- python -m pip install --disable-pip-version-check pynvim==0.6.0
+mise exec -- python -c 'import pynvim'
+mise reshim

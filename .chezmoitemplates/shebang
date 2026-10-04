@@ -3,4 +3,11 @@
 {{ else -}}
 #!/usr/bin/env bash
 {{ end }}
+set -euo pipefail
 export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+printf '[dotfiles] Iniciando %s\n' "${0##*/}"
+bootstrap_error() {
+    printf '[dotfiles] Falha em %s, linha %s (status %s)\n' "$3" "$2" "$1" >&2
+    exit "$1"
+}
+trap 'bootstrap_error "$?" "$LINENO" "${0##*/}"' ERR

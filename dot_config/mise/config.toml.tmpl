@@ -1,25 +1,27 @@
 [tools]
-chezmoi = 'latest'
-fd = 'latest'
-fzf = 'latest'
-gh = 'latest'
-glow = 'latest'
-jq = 'latest'
-lazydocker = 'latest'
-lazygit = 'latest'
+chezmoi = "2.73.0"
+fd = "10.5.0"
+fzf = "0.74.4"
+gh = "2.102.0"
+glow = "3.0.0"
+jq = "1.8.2"
+lazydocker = "0.25.2"
+lazygit = "0.65.1"
 # Pinned: the plugins in nvim/lazy-lock.json were tested with 0.10.
 # Upgrade together with the plugins.
 "aqua:neovim/neovim" = "0.10.1"
-node = 'latest'
-php = '8.4'
-python = '3.12'
-ripgrep = 'latest'
-"npm:agent-browser" = "latest"
-"npm:diff-so-fancy" = "latest"
+node = "26.10.0"
+php = "8.4.26"
+python = "3.12.15"
+ripgrep = "15.2.0"
+"npm:agent-browser" = "0.38.2"
+"npm:diff-so-fancy" = "1.4.12"
 {{- if eq .chezmoi.os "linux" }}
 # ffmpeg for `agent-browser record`: it needs ffmpeg >= 5.1 (-fps_mode) and
 # Ubuntu 22.04 ships 4.4. Static build from BtbN (no macOS builds; macOS gets
 # ffmpeg from brew in the agent-browser run_once script).
-"ubi:BtbN/FFmpeg-Builds" = { version = "latest", matching = "linux64-gpl-8.1", exe = "ffmpeg" }
+# Choose the month's last build: monthly releases are retained for two years,
+# while ordinary daily tags disappear after 14 builds.
+"ubi:BtbN/FFmpeg-Builds" = { version = "autobuild-2026-09-30-13-08", matching = "linux64-gpl-8.1", exe = "ffmpeg" }
 {{- end }}
-"ubi:agavra/tuicr" = { version = "latest", matching = "musl" }
+"ubi:agavra/tuicr" = { version = "0.27.0", matching = "musl" }

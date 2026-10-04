@@ -34,3 +34,33 @@ jobs:
         env:
           PYTHON: ${{ runner.temp }}/venv/bin/python
         run: .github/scripts/validate.sh
+
+  bootstrap-ubuntu:
+    name: Install on clean Ubuntu 26.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    container: ubuntu:26.04
+    steps:
+      - name: Prepare container
+        run: |
+          apt-get update
+          apt-get install -y ca-certificates curl git sudo
+          useradd --create-home --shell /bin/bash dotfiles
+          echo 'dotfiles ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/dotfiles
+          chmod 440 /etc/sudoers.d/dotfiles
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install and verify twice
+        shell: bash
+        run: |
+          mkdir -p /home/dotfiles/Projects
+          cp -a "$GITHUB_WORKSPACE" /home/dotfiles/Projects/dotfiles
+          chown -R dotfiles:dotfiles /home/dotfiles/Projects
+          sudo -H -u dotfiles bash -c '
+            set -euo pipefail
+            curl -fsSL https://get.chezmoi.io -o /tmp/install-chezmoi.sh
+            sh /tmp/install-chezmoi.sh -b "$HOME/.local/bin" -t v2.73.0
+            export DOTFILES_SOURCE="$HOME/Projects/dotfiles"
+            bash "$DOTFILES_SOURCE/.github/scripts/bootstrap-ubuntu.sh"
+          '

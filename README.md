@@ -5,6 +5,23 @@ Install with [chezmoi](https://www.chezmoi.io/install):
 chezmoi init --apply https://github.com/tsantos8080/dotfiles.git
 ```
 
+On Linux, the bootstrap targets Ubuntu with `main` and `universe` enabled.
+System dependencies are installed first (with `sudo`), then mise installs the
+pinned tool versions. PHP is compiled once; subsequent applies reuse it. Node
+comes exclusively from mise. The Neovim Python provider is installed into mise's
+Python. On macOS, Homebrew must already be installed.
+
+The installer preserves the managed `.zshrc`, changes the login shell only when
+necessary, and stops on errors. Each script prints its name before running. Open
+a new terminal after installation; Bash and Zsh load mise automatically. To
+resume an interrupted installation, run `chezmoi apply -v`.
+
+Tool versions live in `dot_config/mise/config.toml.tmpl`. Update them deliberately
+and run `.github/scripts/validate.sh` before committing. The Neovim version and
+`lazy-lock.json` must be updated together. GitHub Actions also installs the full
+configuration as an unprivileged user on clean Ubuntu 26.04, checks PHP
+extensions and shell activation, and applies it twice to check repeatability.
+
 ### Keybindings in Neovim
 
 | **Command**        | **Description**                                                     |

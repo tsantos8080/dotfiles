@@ -1,5 +1,6 @@
-{{- if eq .chezmoi.os "darwin" -}}
+{{ if eq .chezmoi.os "darwin" -}}
 #!/usr/bin/env zsh
-{{- else -}}
+{{ else -}}
 #!/usr/bin/env bash
-{{- end -}}
+{{ end }}
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"

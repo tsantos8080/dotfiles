@@ -1,0 +1,5 @@
+# User tools and mise activation for interactive Bash shells.
+export PATH="$HOME/bin:$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate bash)"
+fi

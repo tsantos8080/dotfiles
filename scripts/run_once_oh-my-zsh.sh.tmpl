@@ -1,6 +1,6 @@
 {{- template "shebang" . }}
 
-if grep -q "oh-my-zsh.sh" "$HOME/.zshrc"; then
+if [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
 	echo -e "\e[32moh-my-zsh is already installed. skipping...\e[0m"
 else
 	{{- if eq .chezmoi.os "linux" }}
@@ -8,12 +8,12 @@ else
 	sudo apt install -y zsh curl
 	{{- end }}
 
-	RUNZSH=no CHSH=no sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+	RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
 {{ if eq .chezmoi.os "linux" -}}
 # Set zsh as default shell
-sudo chsh -s /usr/bin/zsh
+sudo chsh -s /usr/bin/zsh "$(id -un)"
 {{- end }}
 
 # Plugins

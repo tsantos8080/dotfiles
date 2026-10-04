@@ -1,4 +1,5 @@
 {{- template "shebang" . }}
+set -e
 
 if which mise > /dev/null 2>&1; then
 	echo -e "\e[32mmise is already installed. skipping...\e[0m"
@@ -9,25 +10,28 @@ else
 	curl https://mise.run | sh
 	{{- end }}
 
-	# PHP dependencies
+fi
+
+# PHP dependencies
 
 	{{- if eq .chezmoi.os "darwin" }}
 	brew install autoconf gmp libsodium bison re2c libxml2 pkgconf libgd libiconv libzip icu4c
 	{{- else }}
-	sudo apt install -y bison re2c libxml2 libxml2-dev libssl-dev libsqlite3-dev \
+	sudo apt install -y build-essential autoconf bison re2c pkg-config libxml2-dev libssl-dev libsqlite3-dev \
 		sqlite3 libcurl4-openssl-dev curl libgd-dev libonig-dev libpq-dev \
-		libreadline-dev libzip-dev
+		libreadline-dev libzip-dev libicu-dev
 	{{- end }}
-fi
+
+export PATH="$HOME/.local/bin:$PATH"
 
 # Configure
 mise trust ${PWD}
 
 {{- if eq .chezmoi.os "darwin" }}
 PHP_CONFIGURE_OPTIONS="--with-iconv=$(brew --prefix libiconv) --with-openssl=$(brew --prefix openssl)" \
-	mise install
+	mise install --yes
 {{- else }}
-mise install
+mise install --yes
 {{- end }}
 
 echo -e "\033[33mPlease run 'source ~/.zshrc' manually for the changes to take effect.\033[0m"

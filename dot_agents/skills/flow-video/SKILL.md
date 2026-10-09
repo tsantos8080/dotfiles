@@ -12,7 +12,7 @@ com `agent-browser skills get core` antes de usar) e do `ffmpeg` com
 
 Scripts em `scripts/` (nesta pasta):
 
-- `rec-lib.sh`: funções para gravar (`wref`, `glide`, `tap`, `sscroll`, `key`,
+- `rec-lib.sh`: funções para gravar (`wref`, `center`, `glide`, `tap`, `sscroll`, `key`,
   `mark`, `hold`, `now`).
 - `burn-captions.py`: grava no vídeo bruto as legendas e os selos de tecla.
 - `contact-grid.py`: gera uma imagem com um quadro por legenda, para conferir.

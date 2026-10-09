@@ -29,24 +29,40 @@ wref() {
 # glide REF [ms]: leva o cursor até o centro do elemento numa curva suave (padrão 700 ms).
 # O "hover" salta direto; com o glide o cursor percorre o caminho no vídeo.
 # Use depois de scrollintoview, porque a posição é a da área visível.
+# center REF: imprime "x y" do centro do elemento na área visível.
+# Se a página estiver se redesenhando, o box pode vir zerado; tenta de novo por até 2 s.
+center() {
+  local xy i
+  for i in $(seq 1 5); do
+    xy=$(agent-browser get box "@$1" --json 2>/dev/null | python3 -c "import json,sys;d=json.load(sys.stdin)['data'];print(int(d['x']+d['width']/2), int(d['y']+d['height']/2)) if d.get('width') else None" 2>/dev/null)
+    [ -n "$xy" ] && [ "$xy" != "None" ] && { echo "$xy"; return 0; }
+    sleep 0.4
+  done
+  return 1
+}
+
+# glide REF [ms]: leva o cursor até o centro do elemento numa curva suave (padrão 700 ms).
+# O "hover" salta direto; com o glide o cursor percorre o caminho no vídeo.
 glide() {
-  local box cx cy
-  box=$(agent-browser get box "@$1" --json) || return 1
-  read -r cx cy < <(echo "$box" | python3 -c "import json,sys;d=json.load(sys.stdin)['data'];print(int(d['x']+d['width']/2), int(d['y']+d['height']/2))")
+  local cx cy
+  read -r cx cy < <(center "$1") || return 1
   agent-browser mouse move "$cx" "$cy" --human --duration "${2:-700}" >/dev/null
 }
 
-# tap REF: desliza até o elemento, desenha um anel que se expande no ponto do clique e clica.
+# tap REF [ms]: desliza até o elemento, desenha um anel que se expande no ponto do clique e clica.
 # A onda do --cursor é discreta; o anel deixa o clique visível no vídeo.
+# Lê a posição uma vez só e usa o mesmo ponto para o movimento, o anel e o registro do clique.
 tap() {
-  local box cx cy
-  glide "$1" "${2:-700}" || return 1
-  box=$(agent-browser get box "@$1" --json) || return 1
-  read -r cx cy < <(echo "$box" | python3 -c "import json,sys;d=json.load(sys.stdin)['data'];print(int(d['x']+d['width']/2), int(d['y']+d['height']/2))")
-  # registra o clique (tempo x y) para o burn-captions.py tirar a legenda de cima dele
-  awk -v t="$(now)" -v t0="$T0" -v x="$cx" -v y="$cy" 'BEGIN{printf "%.2f %d %d\n", t-t0, x, y}' >> "$FV_DIR/cliques-${FV_FLOW:-1}.txt"
-  agent-browser eval "(()=>{const r=document.createElement('div');r.style.cssText='position:fixed;left:${cx}px;top:${cy}px;width:16px;height:16px;margin:-8px 0 0 -8px;border:3px solid rgba(255,140,0,.95);border-radius:50%;pointer-events:none;z-index:2147483647;transition:transform .55s ease-out,opacity .55s ease-out';document.body.appendChild(r);requestAnimationFrame(()=>{r.style.transform='scale(3.2)';r.style.opacity='0'});setTimeout(()=>r.remove(),700)})()" >/dev/null
-  sleep 0.18
+  local cx cy
+  if read -r cx cy < <(center "$1"); then
+    agent-browser mouse move "$cx" "$cy" --human --duration "${2:-700}" >/dev/null
+    # registra o clique (tempo x y) para o burn-captions.py tirar a legenda de cima dele
+    awk -v t="$(now)" -v t0="$T0" -v x="$cx" -v y="$cy" 'BEGIN{printf "%.2f %d %d\n", t-t0, x, y}' >> "$FV_DIR/cliques-${FV_FLOW:-1}.txt"
+    agent-browser eval "(()=>{const r=document.createElement('div');r.style.cssText='position:fixed;left:${cx}px;top:${cy}px;width:16px;height:16px;margin:-8px 0 0 -8px;border:3px solid rgba(255,140,0,.95);border-radius:50%;pointer-events:none;z-index:2147483647;transition:transform .55s ease-out,opacity .55s ease-out';document.body.appendChild(r);requestAnimationFrame(()=>{r.style.transform='scale(3.2)';r.style.opacity='0'});setTimeout(()=>r.remove(),700)})()" >/dev/null
+    sleep 0.18
+  else
+    echo "tap: sem posição para @$1; clicando sem animação" >&2
+  fi
   agent-browser click "@$1" >/dev/null
 }
 

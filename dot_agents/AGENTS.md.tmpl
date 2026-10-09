@@ -8,6 +8,9 @@ do repositório) têm prioridade quando conflitarem.
 - Responda em português do Brasil. Código, nomes, mensagens de commit do
   repositório e documentação seguem o idioma que o projeto já usa.
 - Seja direto. Quando algo der errado ou eu tiver errado, diga claramente.
+- Texto que vai para outras pessoas (documentação, Jira, Confluence, descrição
+  de PR, Logseq) passa pela skill `humanizer` antes de você me mostrar. Diga
+  que passou.
 
 ### Explicações
 
@@ -42,6 +45,10 @@ do repositório) têm prioridade quando conflitarem.
 - Não faça commit nem push sem eu pedir. Um pedido vale só para aquele
   conjunto de mudanças.
 - Use Conventional Commits.
+- Um commit por mudança lógica. Não junte refactor, correção e os testes de
+  outra mudança no mesmo commit.
+- Ao criar ou editar a descrição de um PR, siga o template em `.github/` do
+  repositório (`pull_request_template.md`), mantendo os títulos das seções.
 - Nunca use `--force` sem eu pedir explicitamente; quando pedir, prefira
   `--force-with-lease`.
 

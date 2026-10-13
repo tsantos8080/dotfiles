@@ -1,0 +1,3 @@
+{{- template "shebang" . }}
+# Installer checksum: {{ include "dot_codex/private_executable_notify-setup.py" | sha256sum }}
+/usr/bin/python3 "$HOME/.codex/notify-setup.py"

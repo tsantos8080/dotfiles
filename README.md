@@ -22,6 +22,79 @@ and run `.github/scripts/validate.sh` before committing. The Neovim version and
 configuration as an unprivileged user on clean Ubuntu 26.04, checks PHP
 extensions and shell activation, and applies it twice to check repeatability.
 
+### Codex notifications with Pushover (macOS)
+
+On macOS, chezmoi installs a Python notification script and adds Codex CLI's
+native `notify` hook to `~/.codex/config.toml`. Existing settings are preserved
+and backed up; an existing different `notify` hook is left untouched. Restart
+Codex CLI after installation to load the hook.
+
+Notifications are sent only when all online displays are asleep, as reported by
+CoreGraphics. Locking the session alone does not qualify. If the display state
+cannot be confirmed, no notification is sent. Notification failures do not
+interrupt Codex; the hook has a 20-second execution limit.
+
+Open the interactive terminal configurator to register tokens, choose whether
+to include response excerpts, inspect display/credential status, and test delivery:
+
+```sh
+/usr/bin/python3 ~/.codex/notify-setup.py --interactive
+```
+
+It starts with excerpts disabled on new machines. The API test asks for explicit
+confirmation because it sends even when the display is on. Token entry is hidden.
+The installer used by chezmoi remains noninteractive.
+
+Alternatively, register credentials once per Mac using hidden prompts:
+
+```sh
+/usr/bin/python3 ~/.codex/notify.py --configure-credentials
+/usr/bin/python3 ~/.codex/notify.py --credentials-status
+```
+
+Enter `PUSHOVER_APP_TOKEN` first, then `PUSHOVER_USER_KEY`. They are stored in the
+macOS login Keychain, not in Git, chezmoi templates, or the script. No personal
+Bitwarden account is required at setup or runtime. Each machine needs its own
+local registration; the dotfiles do not distribute credentials.
+
+Response excerpts are **disabled by default on new installations**, suitable
+for work machines. Enable them explicitly only if sending response content to
+your Pushover account is appropriate. The local setting is not managed by
+chezmoi and existing preferences are preserved:
+
+```sh
+/usr/bin/python3 ~/.codex/notify-setup.py --summary on
+/usr/bin/python3 ~/.codex/notify-setup.py --summary off
+```
+
+When enabled, notifications include at most 240 characters from the last reply,
+not an AI-generated summary or a secret-filtered response. The project name is
+included when available; user prompts are never sent. The current Codex event
+does not provide a reliable error status.
+
+Test the integration:
+
+```sh
+/usr/bin/python3 ~/.codex/notify.py --screen-status
+/usr/bin/python3 ~/.codex/notify.py --test-api
+/usr/bin/python3 ~/.codex/notify.py --test-notification
+```
+
+`--test-api` deliberately ignores display state and sends a synthetic message;
+`--test-notification` respects the display check. API acceptance and display
+on/off gating were tested on macOS, and Android receipt was confirmed. Validate
+a real native Codex completion after restarting the CLI. See
+[the detailed notification guide](dot_codex/private_notify-README.md) for manual
+display tests, troubleshooting, and removal.
+
+Sources are `dot_codex/private_executable_notify.py`,
+`dot_codex/private_executable_notify-setup.py`, and
+`scripts/run_onchange_after_codex-notify.sh.tmpl`. Local settings, credentials,
+backups, and logs are not versioned. These files are applied **only on macOS**.
+Windows 11, Codex in WSL/Ubuntu, and Claude Code on Ubuntu/GNOME still need their
+own implementations and real-system validation. In WSL, display detection must
+use the Windows host rather than the Ubuntu guest.
+
 ### Keybindings in Neovim
 
 | **Command**        | **Description**                                                     |

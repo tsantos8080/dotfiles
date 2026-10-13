@@ -16,3 +16,11 @@ scripts/linux/
 
 
 {{ end }}
+
+{{ if ne .chezmoi.os "darwin" }}
+# Codex/Pushover: native macOS display and Keychain implementation.
+.codex/notify.py
+.codex/notify-setup.py
+.codex/notify-README.md
+scripts/codex-notify.sh
+{{ end }}

@@ -115,6 +115,7 @@ def main():
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--summary", choices=("on", "off"))
     group.add_argument("--interactive", action="store_true")
+    group.add_argument("--visual", action="store_true")
     args = parser.parse_args()
     if sys.platform != "darwin":
         parser.error("Esta implementação é específica do macOS.")
@@ -123,6 +124,9 @@ def main():
         set_summary(args.summary == "on")
     elif args.interactive:
         interactive()
+    elif args.visual:
+        from notify_ui import main as visual_main
+        visual_main()
 
 
 if __name__ == "__main__":

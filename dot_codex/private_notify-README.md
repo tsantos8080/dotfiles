@@ -13,8 +13,10 @@ Por autorização do usuário, `notify-settings.json` habilita um trecho de até
 ## Configurador interativo
 
 ```sh
-/usr/bin/python3 ~/.codex/notify-setup.py --interactive
+pushover-config
 ```
+
+Use as setas para selecionar, Enter para confirmar e Esc ou q para voltar/sair. Os campos de tokens não mostram o que é digitado. O comando fica em `~/.local/bin/pushover-config`.
 
 O menu permite cadastrar tokens com entrada oculta, escolher se envia um trecho da resposta, consultar tela/credenciais e testar o envio. O teste que ignora a tela pede confirmação explícita. A instalação automática pelo chezmoi continua sem perguntas.
 

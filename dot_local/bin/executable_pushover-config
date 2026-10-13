@@ -1,0 +1,3 @@
+#!/bin/sh
+# Native macOS Python; independent of mise and the invoking terminal's PATH.
+exec /usr/bin/python3 "$HOME/.codex/notify-setup.py" --visual "$@"

@@ -34,12 +34,17 @@ CoreGraphics. Locking the session alone does not qualify. If the display state
 cannot be confirmed, no notification is sent. Notification failures do not
 interrupt Codex; the hook has a 20-second execution limit.
 
-Open the interactive terminal configurator to register tokens, choose whether
+Open the visual terminal configurator to register tokens, choose whether
 to include response excerpts, inspect display/credential status, and test delivery:
 
 ```sh
-/usr/bin/python3 ~/.codex/notify-setup.py --interactive
+pushover-config
 ```
+
+Use the arrow keys to select an option, Enter to confirm, and Esc or q to return
+or exit. Credential fields display no input. No additional Python packages are
+required. The numbered menu remains available with
+`/usr/bin/python3 ~/.codex/notify-setup.py --interactive`.
 
 It starts with excerpts disabled on new machines. The API test asks for explicit
 confirmation because it sends even when the display is on. Token entry is hidden.

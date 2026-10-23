@@ -1,13 +1,13 @@
 ---
 name: start-task
-description: Inicia uma tarefa do Jira - lê a tarefa e todos os comentários, entrevista o usuário com a skill grilling até o entendimento ficar claro, cria a branch (feat/ ou fix/ com a chave da tarefa), abre o PR em draft com gh, comenta o link do PR no Jira e registra a revisão como TODO no journal do Logseq. Use só quando o usuário chamar /start-task ou $start-task, ou pedir explicitamente para "iniciar a task" com esse fluxo.
+description: Inicia uma tarefa do Jira - lê a tarefa e todos os comentários, entrevista o usuário com a skill grilling até o entendimento ficar claro, cria a branch (feat/ ou fix/ com a chave da tarefa), abre o PR em draft com gh, comenta o link do PR no Jira, registra a revisão como TODO no journal do Logseq e implementa a tarefa com testes. Use só quando o usuário chamar /start-task ou $start-task, ou pedir explicitamente para "iniciar a task" com esse fluxo.
 disable-model-invocation: true
 ---
 
 # Iniciar tarefa do Jira
 
-Fluxo para começar uma tarefa: entender, alinhar e deixar tudo preparado
-(branch, PR em draft, Jira e Logseq) antes de escrever código.
+Fluxo para começar uma tarefa: entender, alinhar, deixar tudo preparado
+(branch, PR em draft, Jira e Logseq) e depois implementar.
 
 ## 0. Pegue a tarefa
 
@@ -31,7 +31,8 @@ Se o MCP do Atlassian não estiver disponível ou não autenticado, pare e avise
 usuário. Não siga sem ler a tarefa.
 
 Depois de ler, olhe o código que a tarefa toca (rotas, classes, testes
-existentes) o suficiente para fazer boas perguntas. Não implemente nada.
+existentes) o suficiente para fazer boas perguntas. Ainda não implemente
+nada: a implementação é a etapa 8, depois do plano confirmado.
 
 ## 2. Entreviste o usuário (grilling)
 
@@ -61,10 +62,13 @@ Antes de qualquer ação, mostre de uma vez e peça um "pode seguir":
   `tipo(escopo): descrição` (`escopo` é opcional, em minúsculas). Sem a chave
   do Jira. Conciso e fácil de entender, sem jargão desnecessário
   (ex.: `feat: adiciona validação de CPF no cadastro de clientes`);
-- o comentário que vai para o Jira e a linha que vai para o Logseq.
+- o comentário que vai para o Jira e a linha que vai para o Logseq;
+- o plano de implementação: arquivos que serão criados ou alterados, os casos
+  de teste e como os commits serão divididos.
 
 Se o usuário ajustar algo, refaça o resumo. Depois do "pode seguir", execute as
-etapas 4 a 7 sem novas perguntas, a não ser que algo falhe.
+etapas 4 a 8 sem novas perguntas, a não ser que algo falhe ou surja uma
+decisão que a entrevista não cobriu.
 
 ## 4. Crie a branch
 
@@ -126,14 +130,33 @@ PR em draft: <URL do PR>
   - TODO Revisar [PR](<URL do PR>) da task [<CHAVE>](https://melhorenvio.atlassian.net/browse/<CHAVE>)
   ```
 
-## 8. Resumo final
+## 8. Implemente
+
+Implemente o que foi acordado na etapa 2, seguindo o plano da etapa 3:
+
+- use a skill `tdd`: escreva o teste, veja falhar pelo motivo certo, depois
+  implemente até passar;
+- siga as instruções do projeto (`CLAUDE.md` / `AGENTS.md`) para padrões de
+  código, testes, estilo e análise estática;
+- rode os testes que cobrem a mudança, o fixer de estilo e a análise estática
+  do projeto, e leia a saída. Não diga que terminou sem essa prova;
+- divida em um commit por mudança lógica (Conventional Commits, no idioma do
+  repositório). O "pode seguir" da etapa 3 autoriza esses commits e o push na
+  branch da tarefa;
+- se surgir uma decisão que a entrevista não cobriu, pare e pergunte em vez de
+  escolher sozinho.
+
+Depois do push, atualize o corpo do PR: troque os itens marcados com "a
+confirmar na implementação" pelos valores reais e ajuste o que mudou em
+relação ao plano. Passe o texto pela `humanizer`. Mantenha o PR em draft; quem
+marca como pronto é o usuário (ou a skill `send-task`).
+
+## 9. Resumo final
 
 Mostre em poucas linhas: branch criada, URL do PR, comentário no Jira e
-journal atualizado, e o resumo do entendimento da etapa 2. Se alguma etapa
-falhou, diga qual, o erro, e o que já foi feito, sem desfazer nada por conta
-própria.
+journal atualizado, o resumo do entendimento da etapa 2, os commits feitos e
+as checagens rodadas com o resultado de cada uma. Se alguma etapa falhou, diga
+qual, o erro, e o que já foi feito, sem desfazer nada por conta própria.
 
-Quando a implementação terminar, o corpo do PR deve ser revisado: confirme os
-itens marcados com "a confirmar na implementação" e o que mudou (no projeto do
-Melhor Envio, com a skill `send-task` ou `pr-template-automation`). Depois
-marque o PR como pronto (`gh pr ready`).
+Para fechar a tarefa (briefing de QA, PR pronto com `gh pr ready`), use a
+skill `send-task` no projeto do Melhor Envio quando o usuário pedir.

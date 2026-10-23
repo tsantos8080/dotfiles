@@ -89,10 +89,17 @@ git push -u origin <branch>
 Monte o corpo do PR:
 
 - se existir `.github/pull_request_template.md`, use-o mantendo os títulos das
-  seções exatamente como estão. Preencha só "Qual a proposta do PR?" com um
-  resumo da tarefa e do entendimento acordado, e deixe as outras seções com o
-  texto de ajuda do template para completar no fim da tarefa;
-- sem template, escreva um parágrafo com a proposta.
+  seções exatamente como estão. Tente preencher **todas** as seções com o que
+  já foi decidido na entrevista (proposta, deploy e variáveis de ambiente,
+  feature flags, roteiro de simulação/QA, reversão, data de publicação,
+  mudanças de banco, dados pessoais). Troque o texto de ajuda e os
+  placeholders (`[Descrição]`, `[Sim / Não]` etc.) pela resposta;
+- o que ainda depende do código (nome exato de flag, chave de config, comando)
+  entra como rascunho com o valor provável e a marcação `(a confirmar na
+  implementação)`. Só deixe uma seção com o texto de ajuda se a entrevista não
+  der base nenhuma para respondê-la, e diga isso no resumo final;
+- sem template, escreva um parágrafo com a proposta;
+- passe o texto pela skill `humanizer` antes de criar o PR.
 
 ```bash
 gh pr create --draft --base <base> --head <branch> --title "<título>" --body-file <arquivo-temporário>
@@ -126,6 +133,7 @@ journal atualizado, e o resumo do entendimento da etapa 2. Se alguma etapa
 falhou, diga qual, o erro, e o que já foi feito, sem desfazer nada por conta
 própria.
 
-Quando a implementação terminar, o corpo do PR deve ser completado (no projeto
-do Melhor Envio, com a skill `send-task` ou `pr-template-automation`) e o PR
-marcado como pronto (`gh pr ready`).
+Quando a implementação terminar, o corpo do PR deve ser revisado: confirme os
+itens marcados com "a confirmar na implementação" e o que mudou (no projeto do
+Melhor Envio, com a skill `send-task` ou `pr-template-automation`). Depois
+marque o PR como pronto (`gh pr ready`).

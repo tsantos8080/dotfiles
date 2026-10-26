@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Git branch of a folder for the tmux status bar. Shows only the Jira key
+# when the branch has one (fix/PTB-6531-... -> PTB-6531). Prints nothing
+# outside a git repository.
+
+branch=$(git -C "$1" branch --show-current 2>/dev/null) || exit 0
+[ -n "$branch" ] || exit 0
+
+key=$(grep -oE '[A-Z]+-[0-9]+' <<<"$branch" | head -1)
+echo " ${key:-$branch}  "

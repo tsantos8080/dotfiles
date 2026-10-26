@@ -1,0 +1,8 @@
+{
+  "uuid": "pr-review@tsantos8080",
+  "name": "PR Review",
+  "description": "Top bar count of open pull requests where my review was requested by name (not through a team). Clicking one opens it; the menu also opens gh-dash in tmux.",
+  "shell-version": ["42"],
+  "url": "https://github.com/tsantos8080/dotfiles",
+  "version": 1
+}

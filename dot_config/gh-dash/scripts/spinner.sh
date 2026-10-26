@@ -27,9 +27,15 @@ spin() {
   return "$status"
 }
 
-# Marks the tmux window opened by tmux-run.sh, e.g. "summary #123 ✓", so the
-# state shows in the status bar. Does nothing outside such a window.
+# Marks the tmux window opened by tmux-run.sh while it loads ("summary #123 ◌")
+# and clears the mark when the result is ready, like the Claude Code hooks do.
+# Does nothing outside such a window.
+# Usage: window_status loading|clear
 window_status() {
   [[ -n ${TMUX:-} && -n ${GHDASH_WINDOW:-} ]] || return 0
-  tmux rename-window -t "$TMUX_PANE" "$GHDASH_WINDOW $1"
+  if [[ $1 == loading ]]; then
+    tmux rename-window -t "$TMUX_PANE" "$GHDASH_WINDOW ◌"
+  else
+    tmux rename-window -t "$TMUX_PANE" "$GHDASH_WINDOW"
+  fi
 }

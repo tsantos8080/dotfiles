@@ -18,14 +18,14 @@ Arquivos:
     echo "Diff (pode estar cortado):"
     # Large diffs are cut so the prompt stays small.
     gh pr diff "$pr" --repo "$repo" | head -c 150000
-  } | claude -p "Resuma esta pull request em português do Brasil, em markdown curto:
+  } | CLAUDE_HOOKS_QUIET=1 claude -p "Resuma esta pull request em português do Brasil, em markdown curto:
 1. O que muda e por quê (2-3 frases).
 2. Onde está o risco (arquivo:linha quando der).
 3. O que olhar primeiro na revisão.
 Não invente: se algo não estiver no diff, diga que não dá para saber."
 }
 
-window_status ◌
+window_status loading
 summary=$(spin "Summarizing PR #$pr..." summarize)
-window_status ✓
+window_status clear
 printf '%s\n' "$summary" | "$(dirname "$0")/show-markdown.sh"

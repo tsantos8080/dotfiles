@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Rename a tmux window in a popup, same look as tmux-find-window.
+# Bound to Alt+R in ~/.tmux.conf, which passes the window id.
+# fzf is used only as a text field: Enter saves, Esc cancels.
+
+window=$1
+fzf="$(command -v fzf || echo "$HOME/.local/share/mise/shims/fzf")"
+
+# Drop the Claude Code state mark (◌ or ?); the hook puts it back.
+name=$(tmux display -p -t "$window" '#{window_name}' | sed -E 's/ (◌|\?)$//')
+
+new=$(: | "$fzf" --reverse --no-info --prompt 'rename> ' --query "$name" \
+	--bind 'enter:print-query')
+
+[ -n "$new" ] && tmux rename-window -t "$window" -- "$new"

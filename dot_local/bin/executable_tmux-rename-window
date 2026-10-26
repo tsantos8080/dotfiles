@@ -1,18 +1,50 @@
 #!/usr/bin/env bash
 # Rename a tmux window in a popup, same look as tmux-find-window.
 # Bound to Alt+R in ~/.tmux.conf, which passes the window id.
-# fzf is used only as a text field: Enter saves, Esc cancels, and Alt+R
-# again asks Claude for a name (tmux-suggest-window-name).
+#
+# The field is the new name: Enter saves it, Esc cancels. Below it come my
+# open Jira tasks (tmux-jira-tasks, refreshed in the background): Tab or the
+# arrows move to a task and switch the prompt to "task>", so Enter uses the
+# task's short name; typing again switches back to "rename>".
+# Alt+R again asks Claude for a name (tmux-suggest-window-name).
 
 window=$1
 fzf="$(command -v fzf || echo "$HOME/.local/share/mise/shims/fzf")"
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/tmux-jira-tasks.tsv"
 
 # Drop the Claude Code state mark (◌ or ?); the hook puts it back.
 name=$(tmux display -p -t "$window" '#{window_name}' | sed -E 's/ (◌|\?)$//')
 
-new=$(: | "$fzf" --reverse --no-info --prompt 'rename> ' --query "$name" \
-	--bind 'enter:print-query' \
+if [ -s "$cache" ]; then
+	header='Jira: refreshing…'
+else
+	header='Jira: loading (~15s)…'
+	mkdir -p "$(dirname "$cache")" && : > "$cache"
+fi
+
+# The first Tab/arrow only switches to "task>" (the cursor is already on the
+# first task); the next ones move through the list.
+move() { echo "transform:[ \"\$FZF_PROMPT\" = \"task> \" ] && echo $1 || echo 'change-prompt(task> )+change-pointer(▶)'"; }
+# --disabled: the field is the name, not a search, so it does not filter tasks.
+# In "rename>" the current line looks like the others: its pointer is the same
+# ▌ as the gutter, in the same color, with no highlight. "task>" shows ▶.
+# fzf cannot change colors at runtime, so ▌ and ▶ share one gray (Kanagawa).
+out=$(cat "$cache" | "$fzf" --reverse --no-info --cycle --disabled \
+	--prompt 'rename> ' --query "$name" --header "$header" \
+	--pointer '▌' --color 'fg+:-1:regular,bg+:-1,hl+:-1,gutter:-1,pointer:#727169:regular' \
+	--delimiter $'\t' --with-nth 1,3 \
+	--bind "tab:$(move down)" --bind "btab:$(move up)" \
+	--bind "down:$(move down)" --bind "up:$(move up)" \
+	--bind 'change:change-prompt(rename> )+change-pointer(▌)' \
+	--bind 'enter:transform:[ "$FZF_PROMPT" = "task> " ] && echo accept || echo print-query' \
+	--bind "start:bg-transform($HOME/.local/bin/tmux-jira-tasks --fzf)" \
 	--bind "alt-r:change-prompt[rename (asking Claude…)> ]+bg-transform($HOME/.local/bin/tmux-suggest-window-name --fzf $window {q})")
+
+# A task line has tabs: use its short name (4th field).
+case $out in
+	*$'\t'*) new=$(cut -f4 <<<"$out") ;;
+	*) new=$out ;;
+esac
 
 # Cancel is not an error: a non-zero exit makes run-shell show a message.
 if [ -n "$new" ]; then

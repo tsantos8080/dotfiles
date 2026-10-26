@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# My open Jira tasks for the tmux rename popup (tmux-rename-window).
+# Tasks come from the Atlassian MCP through `claude -p` (about 15s), so the
+# popup shows the last list from the cache and calls this in the background.
+#
+# tmux-jira-tasks --fzf   refresh the cache and print fzf actions to reload it
+# Cache lines: KEY<TAB>STATUS<TAB>TITLE<TAB>SHORT NAME
+
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/tmux-jira-tasks.tsv"
+claude="$HOME/.local/bin/claude"
+header='Tab: pick a Jira task · Alt+R: suggest with AI'
+
+prompt='Use a ferramenta searchJiraIssuesUsingJql do Atlassian (site melhorenvio.atlassian.net) com o JQL: assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC, até 30 tarefas, campos summary e status.
+Responda SÓ com uma linha por tarefa, separada por TAB, sem cabeçalho e sem mais nada:
+CHAVE<TAB>STATUS<TAB>TÍTULO<TAB>NOME CURTO
+O NOME CURTO tem até 25 caracteres, em português, e é a chave seguida de 2 ou 3 palavras do assunto, por exemplo: PTB-6531 nota repetida'
+
+# ToolSearch is needed: MCP tools are deferred and loaded through it.
+tasks=$(printf '%s' "$prompt" | CLAUDE_HOOKS_QUIET=1 timeout 120 "$claude" -p --model haiku \
+	--tools 'ToolSearch' \
+	--allowedTools 'ToolSearch,mcp__claude_ai_Atlassian__searchJiraIssuesUsingJql,mcp__claude_ai_Atlassian__getAccessibleAtlassianResources' \
+	2>/dev/null | grep -E $'^[A-Z]+-[0-9]+\t[^\t]+\t[^\t]+\t[^\t]+$')
+
+# Keep the old list when the answer has no task lines (MCP down, etc.).
+if [ -n "$tasks" ]; then
+	mkdir -p "$(dirname "$cache")"
+	printf '%s\n' "$tasks" > "$cache.tmp" && mv "$cache.tmp" "$cache"
+	echo "reload(cat '$cache')+change-header($header)"
+else
+	echo "change-header(Could not reach Jira, showing the last list · $header)"
+fi

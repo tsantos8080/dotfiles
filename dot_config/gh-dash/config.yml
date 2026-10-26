@@ -1,0 +1,58 @@
+# gh-dash: https://www.gh-dash.dev/configuration/
+# Filters use GitHub search syntax. `review-requested:@me` also matches old
+# team requests (some from 2023), so direct and team requests are split.
+prSections:
+  - title: My PRs
+    filters: is:open author:@me
+  - title: Review Requested
+    filters: is:open user-review-requested:@me -author:@me
+  - title: Team Financeiro
+    filters: is:open team-review-requested:melhorenvio/financeiro -author:@me
+  - title: Involved
+    filters: is:open involves:@me -author:@me -review-requested:@me
+  - title: Merged
+    filters: is:merged author:@me sort:updated-desc
+    limit: 10
+issuesSections:
+  - title: My Issues
+    filters: is:open author:@me
+  - title: Assigned
+    filters: is:open assignee:@me
+notificationsSections:
+  - title: All
+    filters: ""
+  - title: Review Requested
+    filters: reason:review-requested
+  - title: Mentions
+    filters: reason:mention
+  - title: Participating
+    filters: reason:participating
+defaults:
+  view: prs
+  prsLimit: 20
+  issuesLimit: 20
+  notificationsLimit: 20
+  refetchIntervalMinutes: 5
+  preview:
+    open: true
+    width: 0.45
+  layout:
+    prs:
+      repo:
+        width: 20
+      lines:
+        width: 15
+      base:
+        hidden: true
+# Where `gh-dash` finds local clones for checkout (key: c).
+repoPaths:
+  melhorenvio/devenv: ~/Projects/devenv
+  melhorenvio/melhorenvio: ~/Projects/devenv/projects/melhorenvio/repositories/melhorenvio
+  melhorenvio/melhorenvio-dash: ~/Projects/devenv/projects/melhorenvio/repositories/melhorenvio-dash
+  melhorenvio/*: ~/Projects/*
+  tsantos8080/*: ~/Projects/*
+pager:
+  diff: diff-so-fancy | less --tabs=4 -RF
+showAuthorIcons: true
+smartFilteringAtLaunch: true
+confirmQuit: false

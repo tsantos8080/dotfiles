@@ -177,11 +177,19 @@ Hints pick something on the screen with the keyboard: each match gets a letter, 
 
 `Ctrl+Shift+E`, `Ctrl+Shift+P` and the font size keys are kitty defaults. `Ctrl+Shift+Y` is set in `kitty.conf`.
 
-### Audio output menu (GNOME 42)
+### GNOME extensions (GNOME 42)
 
-`audio-output-menu@tsantos8080` adds a submenu above Bluetooth in the system menu to pick the audio output. It lists only outputs with something plugged in, using the same mixer as Settings > Sound. GNOME 43 and later have this built in, and the extension declares only GNOME 42, so newer versions ignore it.
+My own extensions are in `dot_local/share/gnome-shell/extensions/`. They declare only GNOME 42, so newer versions ignore them.
 
-`chezmoi apply` copies the files, but GNOME keeps the list of enabled extensions in dconf. Enable it once in the Extensions app (or with `gnome-extensions enable audio-output-menu@tsantos8080`), then restart GNOME Shell (`Alt+F2`, `r` on X11).
+| **Extension**                   | **What it does**                                                                 |
+|---------------------------------|----------------------------------------------------------------------------------|
+| `audio-output-menu@tsantos8080` | Submenu above Bluetooth in the system menu to pick the audio output. Lists only outputs with something plugged in. GNOME 43 and later have this built in. |
+| `claude-status@tsantos8080`     | Top bar count of Claude Code sessions waiting for me (question mark) and working (robot), read from the marks the hooks put on tmux window names. Clicking one opens that window in kitty. Hidden when nothing is happening. |
+| `pr-review@tsantos8080`         | Top bar count of open PRs where my review was requested by name (team requests are left out). Refreshes every 10 minutes, and the menu opens each PR or gh-dash. Stays right after the Claude indicator. |
+
+The icons come from JetBrains Mono Nerd Font.
+
+`chezmoi apply` copies the files, but GNOME keeps the list of enabled extensions in dconf. Enable each one once in the Extensions app (or with `gnome-extensions enable <uuid>`), then restart GNOME Shell (`Alt+F2`, `r` on X11).
 
 ### Agent skills
 

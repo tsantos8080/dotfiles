@@ -12,4 +12,7 @@ name=$(tmux display -p -t "$window" '#{window_name}' | sed -E 's/ (◌|\?)$//')
 new=$(: | "$fzf" --reverse --no-info --prompt 'rename> ' --query "$name" \
 	--bind 'enter:print-query')
 
-[ -n "$new" ] && tmux rename-window -t "$window" -- "$new"
+# Cancel is not an error: a non-zero exit makes run-shell show a message.
+if [ -n "$new" ]; then
+	tmux rename-window -t "$window" -- "$new"
+fi

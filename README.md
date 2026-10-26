@@ -156,6 +156,23 @@ The popups (`Alt+F`, `Alt+N`, `Alt+R`, `Alt+X`) are scripts in `~/.local/bin/tmu
 
 `Alt+C` (folders) is off.
 
+### Keybindings in kitty
+
+kitty opens straight into the tmux session `main`. Detaching (`Ctrl+B` then `D`) leaves a plain zsh in the same window.
+
+Hints pick something on the screen with the keyboard: each match gets a letter, and you type it. They read whatever is on the screen, so they also work inside tmux.
+
+| **Command**                             | **Description**                                         |
+|-----------------------------------------|---------------------------------------------------------|
+| `Ctrl+Shift+E`                          | Opens a URL.                                            |
+| `Ctrl+Shift+P` then `F`                 | Opens a file path. `Shift+F` pastes it instead.         |
+| `Ctrl+Shift+P` then `H`                 | Pastes a commit hash.                                   |
+| `Ctrl+Shift+P` then `W` / `L`           | Pastes a word / a line.                                 |
+| `Ctrl+Shift+Y` then `U`/`F`/`H`/`W`/`L` | Copies a URL / path / hash / word / line to the clipboard. |
+| `Ctrl+Shift+=` / `-` / `Backspace`      | Bigger / smaller / default font size.                   |
+
+`Ctrl+Shift+E`, `Ctrl+Shift+P` and the font size keys are kitty defaults. `Ctrl+Shift+Y` is set in `kitty.conf`.
+
 ### Agent skills
 
 Personal skills for Claude Code and Codex live in `~/.agents/skills` (source: `dot_agents/skills/`), which Codex reads directly. Claude Code gets them through symlinks in `~/.claude/skills` (source: `dot_claude/skills/symlink_*.tmpl`). Invoke with `/<name>` in Claude Code or `$<name>` in Codex, or just describe the task.

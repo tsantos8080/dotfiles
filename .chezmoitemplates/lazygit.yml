@@ -4,7 +4,7 @@ gui:
 
 git:
   localBranchSortOrder: recency
-  paging:
-    colorArg: always
-    pager: diff-so-fancy
+  diffRenderers:
+    - colorArg: always
+      command: diff-so-fancy
 

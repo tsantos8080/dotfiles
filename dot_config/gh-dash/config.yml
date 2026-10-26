@@ -61,16 +61,16 @@ keybindings:
   prs:
     - key: I
       name: review with Claude
-      command: ~/.config/gh-dash/scripts/review.sh {{.RepoPath}} {{.PrNumber}}
+      command: ~/.config/gh-dash/scripts/tmux-run.sh review {{.PrNumber}} ~/.config/gh-dash/scripts/review.sh {{.RepoPath}} {{.PrNumber}}
     - key: S
       name: summarize with Claude
-      command: ~/.config/gh-dash/scripts/summary.sh {{.RepoName}} {{.PrNumber}}
+      command: ~/.config/gh-dash/scripts/tmux-run.sh summary {{.PrNumber}} ~/.config/gh-dash/scripts/summary.sh {{.RepoName}} {{.PrNumber}}
     - key: J
       name: open in Jira
       command: ~/.config/gh-dash/scripts/jira.sh {{.HeadRefName}}
     - key: E
       name: explain CI failures with Claude
-      command: ~/.config/gh-dash/scripts/ci-failures.sh {{.RepoName}} {{.PrNumber}}
+      command: ~/.config/gh-dash/scripts/tmux-run.sh ci {{.PrNumber}} ~/.config/gh-dash/scripts/ci-failures.sh {{.RepoName}} {{.PrNumber}}
     - key: F
       name: fix review comments (worktree)
-      command: ~/.config/gh-dash/scripts/fix-comments.sh {{.RepoPath}} {{.RepoName}} {{.PrNumber}} {{.HeadRefName}}
+      command: ~/.config/gh-dash/scripts/tmux-run.sh fix {{.PrNumber}} ~/.config/gh-dash/scripts/fix-comments.sh {{.RepoPath}} {{.RepoName}} {{.PrNumber}} {{.HeadRefName}}

@@ -97,3 +97,9 @@ claude-connect() {
 }
 
 alias ccon="claude-connect"
+
+# zoxide: `z <parte do caminho>` pula para diretórios já visitados.
+# Fica no fim do arquivo, como o zoxide recomenda.
+if command -v zoxide >/dev/null; then
+  eval "$(zoxide init zsh)"
+fi

@@ -144,12 +144,12 @@ These use the left Alt and no prefix. The right Alt is AltGr in the `us alt-intl
 | `Alt+S`                       | Window list with preview.                                           |
 | `Alt+F`                       | Finds a window by name or folder (fzf).                             |
 | `Alt+N`                       | Opens a window in the current folder and asks for its name. Empty keeps the automatic name; Esc opens nothing. |
-| `Alt+R`                       | Renames the current window.                                         |
+| `Alt+R`                       | Renames the current window. `Alt+R` again in the field asks Claude (Haiku) for a name from the folder, branch, last lines of the window and the other window names, in about 2 seconds. Lines that look like secrets are dropped before sending. |
 | `Alt+X`                       | Closes the current window after confirming. "cancel" is selected first, so pressing Enter by reflex keeps the window. |
 
 The popups (`Alt+F`, `Alt+N`, `Alt+R`, `Alt+X`) are scripts in `~/.local/bin/tmux-*` (source: `dot_local/bin/executable_tmux-*`).
 
-The status bar shows the git branch of the current pane before the clock. When the branch has a Jira key, it shows only the key (`fix/PTB-6531-...` shows `PTB-6531`).
+The status bar shows the git branch of the current pane before the clock, cut at 40 characters.
 
 ### Search in zsh (fzf)
 

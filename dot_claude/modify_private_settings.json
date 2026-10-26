@@ -11,6 +11,26 @@
 {{- end -}}
 {{- $settings = setValueAtPath "theme" "dark" $settings -}}
 {{- $settings = setValueAtPath "skipDangerousModePermissionPrompt" true $settings -}}
+{{- /*
+  Session state in the tmux window name, ◌ working and ? waiting for you
+  (~/.claude/hooks/tmux-status.sh).
+  chezmoi owns each event below: hooks added to them by hand are replaced on
+  the next apply. Other events are kept.
+  Spec: matcher, tmux-status argument.
+*/ -}}
+{{- range $event, $spec := dict
+      "UserPromptSubmit" (list "" "◌")
+      "PostToolUse" (list "*" "◌")
+      "PreToolUse" (list "AskUserQuestion" "'?'")
+      "Notification" (list "permission_prompt|elicitation_dialog" "'?'")
+      "Stop" (list "" "clear")
+      "StopFailure" (list "" "clear")
+      "SessionEnd" (list "" "reset") -}}
+{{-   $hooks := list (dict "type" "command" "command" (printf "~/.claude/hooks/tmux-status.sh %s" (index $spec 1))) -}}
+{{-   $entry := dict "hooks" $hooks -}}
+{{-   if index $spec 0 -}}{{- $entry = set $entry "matcher" (index $spec 0) -}}{{- end -}}
+{{-   $settings = setValueAtPath (printf "hooks.%s" $event) (list $entry) $settings -}}
+{{- end -}}
 {{- $token := get . "sonarToken" -}}
 {{- if $token -}}
 {{-   $settings = setValueAtPath "env.SONAR_TOKEN" $token $settings -}}

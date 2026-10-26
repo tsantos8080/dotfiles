@@ -29,4 +29,8 @@ vim.api.nvim_set_keymap('n', '<leader>t', ':lua require("scripts").run_test()<cr
 -- Save file
 vim.api.nvim_set_keymap('n', '<leader>w', ':w<cr>', {})
 
+-- Reload files changed outside nvim (e.g. by Claude Code) when coming back to it.
+-- Needs `focus-events on` in tmux.
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, { command = "checktime" })
+
 require("lazy").setup("plugins")

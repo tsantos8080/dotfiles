@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Pick a tmux window by typing (fzf). Bound to Alt+F in ~/.tmux.conf.
+# Shows the folder too, so several "claude" windows can be told apart.
+
+fzf="$(command -v fzf || echo "$HOME/.local/share/mise/shims/fzf")"
+
+window=$(
+	tmux list-windows -F '#I  #W  #{s|^'"$HOME"'|~|:pane_current_path}' |
+		"$fzf" --reverse --no-info --prompt 'window> ' --cycle --bind 'tab:down,btab:up' |
+		cut -d' ' -f1
+)
+
+[ -n "$window" ] && tmux select-window -t "$window"

@@ -177,6 +177,12 @@ Hints pick something on the screen with the keyboard: each match gets a letter, 
 
 `Ctrl+Shift+E`, `Ctrl+Shift+P` and the font size keys are kitty defaults. `Ctrl+Shift+Y` is set in `kitty.conf`.
 
+### Audio output menu (GNOME 42)
+
+`audio-output-menu@tsantos8080` adds a submenu above Bluetooth in the system menu to pick the audio output. It lists only outputs with something plugged in, using the same mixer as Settings > Sound. GNOME 43 and later have this built in, and the extension declares only GNOME 42, so newer versions ignore it.
+
+`chezmoi apply` copies the files, but GNOME keeps the list of enabled extensions in dconf. Enable it once in the Extensions app (or with `gnome-extensions enable audio-output-menu@tsantos8080`), then restart GNOME Shell (`Alt+F2`, `r` on X11).
+
 ### Agent skills
 
 Personal skills for Claude Code and Codex live in `~/.agents/skills` (source: `dot_agents/skills/`), which Codex reads directly. Claude Code gets them through symlinks in `~/.claude/skills` (source: `dot_claude/skills/symlink_*.tmpl`). Invoke with `/<name>` in Claude Code or `$<name>` in Codex, or just describe the task.

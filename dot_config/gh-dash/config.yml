@@ -2,10 +2,10 @@
 # Filters use GitHub search syntax. `review-requested:@me` also matches old
 # team requests (some from 2023), so direct and team requests are split.
 prSections:
-  - title: My PRs
-    filters: is:open author:@me
   - title: Review Requested
     filters: is:open user-review-requested:@me -author:@me
+  - title: My PRs
+    filters: is:open author:@me
   - title: Team Financeiro
     filters: is:open team-review-requested:melhorenvio/financeiro -author:@me
   - title: Involved

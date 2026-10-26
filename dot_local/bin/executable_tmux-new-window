@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Open a tmux window asking for its name in a popup, same look as
+# tmux-rename-window. Bound to Alt+N in ~/.tmux.conf, which passes the pane id
+# so the window opens in the same folder.
+# Enter with a name: window with that name. Enter empty: tmux's automatic
+# name. Esc: nothing is opened.
+
+pane=$1
+fzf="$(command -v fzf || echo "$HOME/.local/share/mise/shims/fzf")"
+dir=$(tmux display -p -t "$pane" '#{pane_current_path}')
+
+name=$(: | "$fzf" --reverse --no-info --prompt 'new> ' --bind 'enter:print-query')
+# 130 = Esc. Cancel is not an error: a non-zero exit makes run-shell show a message.
+[ $? -eq 130 ] && exit 0
+
+if [ -n "$name" ]; then
+	tmux new-window -c "$dir" -n "$name"
+else
+	tmux new-window -c "$dir"
+fi

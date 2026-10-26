@@ -25,5 +25,7 @@ Arquivos:
 Não invente: se algo não estiver no diff, diga que não dá para saber."
 }
 
+window_status ◌
 summary=$(spin "Summarizing PR #$pr..." summarize)
+window_status ✓
 printf '%s\n' "$summary" | "$(dirname "$0")/show-markdown.sh"

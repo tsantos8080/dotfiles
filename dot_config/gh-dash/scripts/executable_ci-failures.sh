@@ -35,8 +35,10 @@ Não invente: se o log não mostrar a causa, diga isso."
 }
 
 # gh exits non-zero when checks fail, which is exactly the case we want.
+window_status ◌
 failed=$(spin "Checking PR #$pr..." failed_checks || true)
 if [[ -z $failed ]]; then
+  window_status ✓
   echo "No failing checks on PR #$pr."
   read -rn1 -p "Press any key to go back."
   exit 0
@@ -44,4 +46,5 @@ fi
 
 logs=$(spin "Reading the logs of the failing checks on PR #$pr..." read_logs)
 answer=$(spin "Asking Claude about the failures..." explain)
+window_status ✓
 printf '%s\n' "$answer" | "$(dirname "$0")/show-markdown.sh"

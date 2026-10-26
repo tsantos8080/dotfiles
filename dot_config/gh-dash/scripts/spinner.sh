@@ -26,3 +26,10 @@ spin() {
   rm -f "$err"
   return "$status"
 }
+
+# Marks the tmux window opened by tmux-run.sh, e.g. "summary #123 ✓", so the
+# state shows in the status bar. Does nothing outside such a window.
+window_status() {
+  [[ -n ${TMUX:-} && -n ${GHDASH_WINDOW:-} ]] || return 0
+  tmux rename-window -t "$TMUX_PANE" "$GHDASH_WINDOW $1"
+}

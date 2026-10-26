@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Rename a tmux window in a popup, same look as tmux-find-window.
 # Bound to Alt+R in ~/.tmux.conf, which passes the window id.
-# fzf is used only as a text field: Enter saves, Esc cancels.
+# fzf is used only as a text field: Enter saves, Esc cancels, and Alt+R
+# again asks Claude for a name (tmux-suggest-window-name).
 
 window=$1
 fzf="$(command -v fzf || echo "$HOME/.local/share/mise/shims/fzf")"
@@ -10,7 +11,8 @@ fzf="$(command -v fzf || echo "$HOME/.local/share/mise/shims/fzf")"
 name=$(tmux display -p -t "$window" '#{window_name}' | sed -E 's/ (◌|\?)$//')
 
 new=$(: | "$fzf" --reverse --no-info --prompt 'rename> ' --query "$name" \
-	--bind 'enter:print-query')
+	--bind 'enter:print-query' \
+	--bind "alt-r:change-prompt[rename (asking Claude…)> ]+bg-transform($HOME/.local/bin/tmux-suggest-window-name --fzf $window {q})")
 
 # Cancel is not an error: a non-zero exit makes run-shell show a message.
 if [ -n "$new" ]; then

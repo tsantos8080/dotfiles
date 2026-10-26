@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Suggests a tmux window name with Claude (Haiku). Called by tmux-rename-window
+# when Alt+R is pressed inside the rename field.
+# Usage: tmux-suggest-window-name [--fzf] <window id> <current text in the field>
+# Prints the suggestion, or the current text when anything fails. With --fzf it
+# prints fzf actions instead: restore the prompt and put the name in the field.
+
+fzf_action=false
+[ "$1" = --fzf ] && { fzf_action=true; shift; }
+window=$1
+fallback=$2
+claude="$HOME/.local/bin/claude"
+[ -x "$claude" ] || claude=$(command -v claude) || { echo "$fallback"; exit 0; }
+
+dir=$(tmux display -p -t "$window" '#{pane_current_path}')
+running=$(tmux display -p -t "$window" '#{pane_current_command}')
+branch=$(git -C "$dir" branch --show-current 2>/dev/null)
+others=$(tmux list-windows -F '#W' | sed -E 's/ (◌|\?)$//' | paste -sd ',' -)
+
+# Last lines of the window, without things that look like secrets.
+screen=$(tmux capture-pane -p -t "$window" -S -60 |
+	grep -viE 'password|passwd|secret|token|api[_-]?key|authorization' |
+	sed -E 's/[A-Za-z0-9_+/=-]{24,}/***/g' | tail -60)
+
+prompt="Sugira um nome curto (até 30 caracteres) para uma aba do tmux.
+Siga o padrão dos nomes das outras abas: $others
+Pasta: $dir
+Branch: ${branch:-nenhuma}
+Programa rodando: $running
+Últimas linhas da tela:
+$screen
+
+Responda só com o nome, sem aspas e sem explicação."
+
+# No MCP servers and no tools: connecting to MCP is most of the wait (about
+# 4.5s down to 2.5s). The prompt goes through stdin because --mcp-config and
+# --tools take every argument after them.
+name=$(printf '%s' "$prompt" | CLAUDE_HOOKS_QUIET=1 timeout 20 "$claude" -p --model haiku \
+	--strict-mcp-config --mcp-config '{"mcpServers":{}}' --tools '' 2>/dev/null |
+	head -1 | tr -d '"`' | sed -E 's/^ +| +$//g' | cut -c1-40)
+
+name=${name:-$fallback}
+if $fzf_action; then
+	# change-query: takes the rest of the line, so parentheses in the name are safe.
+	echo "change-prompt(rename> )+change-query:$name"
+else
+	echo "$name"
+fi

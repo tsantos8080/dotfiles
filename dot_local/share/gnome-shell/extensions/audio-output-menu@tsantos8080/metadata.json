@@ -1,0 +1,8 @@
+{
+  "uuid": "audio-output-menu@tsantos8080",
+  "name": "Audio Output Menu",
+  "description": "Submenu under the volume slider to pick the audio output. Shows only outputs with something plugged in.",
+  "shell-version": ["42"],
+  "url": "https://github.com/tsantos8080/dotfiles",
+  "version": 1
+}

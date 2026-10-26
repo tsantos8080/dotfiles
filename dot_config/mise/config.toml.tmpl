@@ -14,9 +14,12 @@ node = "26.10.0"
 php = "8.4.26"
 python = "3.12.15"
 ripgrep = "15.2.0"
+# Backend for the pipx: tools below.
+uv = "0.13.5"
 zoxide = "0.10.0"
 "npm:agent-browser" = "0.38.2"
 "npm:diff-so-fancy" = "1.4.12"
+"pipx:posting" = "2.11.1"
 {{- if eq .chezmoi.os "linux" }}
 # ffmpeg for `agent-browser record`: it needs ffmpeg >= 5.1 (-fps_mode) and
 # Ubuntu 22.04 ships 4.4. Static build from BtbN (no macOS builds; macOS gets

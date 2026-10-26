@@ -1,10 +1,33 @@
 gui:
   language: en
   skipNoStagedFilesWarning: true
+  # Kanagawa Dragon, same as kitty and tmux.
+  theme:
+    activeBorderColor:
+      - "#c4b28a"
+      - bold
+    inactiveBorderColor:
+      - "#625e5a"
+    searchingActiveBorderColor:
+      - "#8ba4b0"
+      - bold
+    optionsTextColor:
+      - "#8ba4b0"
+    selectedLineBgColor:
+      - "#393836"
+    inactiveViewSelectedLineBgColor:
+      - "#282727"
+    cherryPickedCommitFgColor:
+      - "#8ea4a2"
+    cherryPickedCommitBgColor:
+      - "#2d4f67"
+    unstagedChangesColor:
+      - "#c4746e"
+    defaultFgColor:
+      - "#c5c9c5"
 
 git:
   localBranchSortOrder: recency
   diffRenderers:
     - colorArg: always
       command: diff-so-fancy
-

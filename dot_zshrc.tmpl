@@ -98,6 +98,16 @@ claude-connect() {
 
 alias ccon="claude-connect"
 
+# fzf: Ctrl+R busca no histórico, Ctrl+T busca arquivos. O fd lista os
+# arquivos (mais rápido, ignora .git, vendor e node_modules). Alt+C (pastas)
+# fica desligado: vazio desativa o atalho.
+if command -v fzf >/dev/null; then
+  export FZF_DEFAULT_OPTS="--reverse --cycle --bind 'tab:down,btab:up'"
+  export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git --exclude vendor --exclude node_modules"
+  export FZF_ALT_C_COMMAND=""
+  source <(fzf --zsh)
+fi
+
 # zoxide: `z <parte do caminho>` pula para diretórios já visitados.
 # Fica no fim do arquivo, como o zoxide recomenda.
 if command -v zoxide >/dev/null; then

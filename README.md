@@ -144,7 +144,7 @@ These use the left Alt and no prefix. The right Alt is AltGr in the `us alt-intl
 | `Alt+S`                       | Window list with preview.                                           |
 | `Alt+F`                       | Finds a window by name or folder (fzf).                             |
 | `Alt+N`                       | Opens a window in the current folder and asks for its name. Empty keeps the automatic name; Esc opens nothing. |
-| `Alt+R`                       | Renames the current window. `Alt+R` again in the field asks Claude (Haiku) for a name from the folder, branch, last lines of the window and the other window names, in about 2 seconds. Lines that look like secrets are dropped before sending. |
+| `Alt+R`                       | Renames the current window. My open Jira tasks are listed below the field (from the Atlassian MCP, refreshed in the background): Tab moves to one and Enter uses its short name, and typing again goes back to the typed name. `Alt+R` again in the field asks Claude (Haiku) for a name from the folder, branch, last lines of the window and the other window names, in about 2 seconds. Lines that look like secrets are dropped before sending. |
 | `Alt+X`                       | Closes the current window after confirming. "cancel" is selected first, so pressing Enter by reflex keeps the window. |
 
 The popups (`Alt+F`, `Alt+N`, `Alt+R`, `Alt+X`) are scripts in `~/.local/bin/tmux-*` (source: `dot_local/bin/executable_tmux-*`).

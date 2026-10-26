@@ -1,0 +1,8 @@
+{
+  "uuid": "claude-status@tsantos8080",
+  "name": "Claude Status",
+  "description": "Top bar count of tmux windows where Claude Code is working (◌) or waiting for you (?). Clicking a window opens it in kitty.",
+  "shell-version": ["42"],
+  "url": "https://github.com/tsantos8080/dotfiles",
+  "version": 1
+}

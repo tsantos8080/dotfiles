@@ -129,6 +129,8 @@ use the Windows host rather than the Ubuntu guest.
 | `R`                | Starts Treesitter search in operator and visual modes.             |
 | `<c-s>`            | Toggles Flash search in command-line mode.                         |
 
+Files changed outside Neovim, for example by Claude Code, reload when you come back to it: a `checktime` autocmd runs on focus, and tmux has `focus-events on`.
+
 ### Keybindings in tmux
 
 These use the left Alt and no prefix. The right Alt is AltGr in the `us alt-intl` layout, and GNOME already uses Alt+`.
@@ -146,6 +148,8 @@ These use the left Alt and no prefix. The right Alt is AltGr in the `us alt-intl
 | `Alt+X`                       | Closes the current window after confirming. "cancel" is selected first, so pressing Enter by reflex keeps the window. |
 
 The popups (`Alt+F`, `Alt+N`, `Alt+R`, `Alt+X`) are scripts in `~/.local/bin/tmux-*` (source: `dot_local/bin/executable_tmux-*`).
+
+The status bar shows the git branch of the current pane before the clock. When the branch has a Jira key, it shows only the key (`fix/PTB-6531-...` shows `PTB-6531`).
 
 ### Search in zsh (fzf)
 

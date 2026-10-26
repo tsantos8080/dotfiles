@@ -9,3 +9,24 @@ else
 	unzip -o "$HOME/.fonts/font.zip" -d "$HOME/.fonts"
 	fc-cache -f -v
 fi
+
+# kitty from the official installer: Ubuntu 22.04 ships 0.21, without
+# `kitten themes` and newer options. Installs to ~/.local/kitty.app; rerun the
+# installer to update.
+if [ -x "$HOME/.local/kitty.app/bin/kitty" ]; then
+	echo -e "\e[32mkitty is already installed in ~/.local/kitty.app. skipping...\e[0m"
+else
+	curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+fi
+
+# ~/.local/bin comes before /usr/bin in PATH, so this wins over the apt kitty.
+mkdir -p "$HOME/.local/bin"
+ln -sf "$HOME/.local/kitty.app/bin/kitty" "$HOME/.local/kitty.app/bin/kitten" "$HOME/.local/bin/"
+
+# Same file name as the system one, so the dock favorite (kitty.desktop) opens
+# this kitty.
+apps="$HOME/.local/share/applications"
+mkdir -p "$apps"
+sed -e "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|" \
+	-e "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|" \
+	"$HOME/.local/kitty.app/share/applications/kitty.desktop" > "$apps/kitty.desktop"

@@ -129,6 +129,33 @@ use the Windows host rather than the Ubuntu guest.
 | `R`                | Starts Treesitter search in operator and visual modes.             |
 | `<c-s>`            | Toggles Flash search in command-line mode.                         |
 
+### Keybindings in tmux
+
+These use the left Alt and no prefix. The right Alt is AltGr in the `us alt-intl` layout, and GNOME already uses Alt+`.
+
+| **Command**                   | **Description**                                                     |
+|-------------------------------|---------------------------------------------------------------------|
+| `Alt+1` … `Alt+9`             | Goes to window N.                                                   |
+| `Alt+A` / `Alt+D`             | Previous / next window.                                             |
+| `Alt+Shift+A` / `Alt+Shift+D` | Moves the current window left / right.                              |
+| `Alt+W`                       | Goes back to the last used window.                                  |
+| `Alt+S`                       | Window list with preview.                                           |
+| `Alt+F`                       | Finds a window by name or folder (fzf).                             |
+| `Alt+N`                       | Opens a window in the current folder and asks for its name. Empty keeps the automatic name; Esc opens nothing. |
+| `Alt+R`                       | Renames the current window.                                         |
+| `Alt+X`                       | Closes the current window after confirming. "cancel" is selected first, so pressing Enter by reflex keeps the window. |
+
+The popups (`Alt+F`, `Alt+N`, `Alt+R`, `Alt+X`) are scripts in `~/.local/bin/tmux-*` (source: `dot_local/bin/executable_tmux-*`).
+
+### Search in zsh (fzf)
+
+| **Command**        | **Description**                                                     |
+|--------------------|---------------------------------------------------------------------|
+| `Ctrl+R`           | Searches the shell history.                                         |
+| `Ctrl+T`           | Searches files and pastes the path. Files come from `fd`, without `.git`, `vendor` and `node_modules`. |
+
+`Alt+C` (folders) is off.
+
 ### Agent skills
 
 Personal skills for Claude Code and Codex live in `~/.agents/skills` (source: `dot_agents/skills/`), which Codex reads directly. Claude Code gets them through symlinks in `~/.claude/skills` (source: `dot_claude/skills/symlink_*.tmpl`). Invoke with `/<name>` in Claude Code or `$<name>` in Codex, or just describe the task.

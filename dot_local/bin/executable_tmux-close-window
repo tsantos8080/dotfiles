@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Close a tmux window after confirming in a popup, same look as
+# tmux-find-window. Bound to Alt+X in ~/.tmux.conf, which passes the window id.
+# "cancel" comes first, so an Enter by reflex does not close anything.
+
+window=$1
+fzf="$(command -v fzf || echo "$HOME/.local/share/mise/shims/fzf")"
+
+name=$(tmux display -p -t "$window" '#{window_name}')
+running=$(tmux display -p -t "$window" '#{pane_current_command}')
+
+choice=$(printf 'cancel\nclose\n' |
+	"$fzf" --reverse --no-info --cycle --bind 'tab:down,btab:up' \
+		--prompt 'confirm> ' --header "close \"$name\" (running: $running)?")
+
+# Cancel is not an error: a non-zero exit makes run-shell show a message.
+if [ "$choice" = close ]; then
+	tmux kill-window -t "$window"
+fi

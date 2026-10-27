@@ -60,7 +60,23 @@ smartFilteringAtLaunch: true
 confirmQuit: false
 # Uppercase keys: most lowercase ones (and R = refresh all) are built-ins.
 keybindings:
+  # Assign and unassign are unused here too (a and A in the issues view).
+  issues:
+    - key: f19
+      builtin: assign
+    - key: f20
+      builtin: unassign
   prs:
+    # Approve on a (default v). gh-dash cannot unbind a built-in, so assign
+    # and unassign (a and A by default, unused) get keys no one presses: f19
+    # and f20. They must differ: gh-dash merges keybindings by key,
+    # so two built-ins on the same key keep only the last one.
+    - key: a
+      builtin: approve
+    - key: f19
+      builtin: assign
+    - key: f20
+      builtin: unassign
     - key: I
       name: review with Claude
       command: ~/.config/gh-dash/scripts/tmux-run.sh review {{.PrNumber}} ~/.config/gh-dash/scripts/review.sh {{.RepoPath}} {{.PrNumber}}

@@ -30,4 +30,4 @@ git:
   localBranchSortOrder: recency
   diffRenderers:
     - colorArg: always
-      command: diff-so-fancy
+      command: delta --dark --paging=never

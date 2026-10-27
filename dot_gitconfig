@@ -3,9 +3,15 @@
 	name = Thyago R. dos Santos
 [core]
 	editor = vim
-	pager = diff-so-fancy | less --tabs=4 -RF
+	pager = delta
 [interactive]
-	diffFilter = diff-so-fancy --patch
+	diffFilter = delta --color-only
+[delta]
+	# ansi uses the terminal palette, so syntax colors follow the kitty theme.
+	syntax-theme = ansi
+	line-numbers = true
+	# n / N jump between files.
+	navigate = true
 [color "diff-highlight"]
 	oldHighlight = white bold 52
 	newHighlight = white bold 22

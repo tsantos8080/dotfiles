@@ -54,7 +54,9 @@ repoPaths:
   melhorenvio/*: ~/Projects/*
   tsantos8080/*: ~/Projects/*
 pager:
-  diff: diff-so-fancy | less --tabs=4 -RF
+  # gh-dash turns "delta" into "delta --paging always", so the diff stays open.
+  # Options come from the [delta] section in ~/.gitconfig.
+  diff: delta
 showAuthorIcons: true
 # Show every repo at launch, even when opened inside a repository (t toggles the
 # filter to the current repo).

@@ -12,6 +12,3 @@
 	line-numbers = true
 	# n / N jump between files.
 	navigate = true
-[color "diff-highlight"]
-	oldHighlight = white bold 52
-	newHighlight = white bold 22

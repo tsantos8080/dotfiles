@@ -177,6 +177,10 @@ Hints pick something on the screen with the keyboard: each match gets a letter, 
 
 `Ctrl+Shift+E`, `Ctrl+Shift+P` and the font size keys are kitty defaults. `Ctrl+Shift+Y` is set in `kitty.conf`.
 
+### Diffs (delta)
+
+git, gh-dash (`d`) and lazygit show diffs through delta, set up in the `[delta]` section of `dot_gitconfig`. It takes syntax colors from the terminal palette (`syntax-theme = ansi`), shows line numbers, and `n` / `N` jump between files. PHP hunks are highlighted only when they include the `<?php` line, because bat's PHP syntax starts in HTML mode.
+
 ### gh-dash
 
 The config is in `dot_config/gh-dash/config.yml`. It opens with every repo, even inside a project folder; `t` filters to the current repo.

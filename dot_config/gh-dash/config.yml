@@ -56,7 +56,9 @@ repoPaths:
 pager:
   diff: diff-so-fancy | less --tabs=4 -RF
 showAuthorIcons: true
-smartFilteringAtLaunch: true
+# Show every repo at launch, even when opened inside a repository (t toggles the
+# filter to the current repo).
+smartFilteringAtLaunch: false
 confirmQuit: false
 # Uppercase keys: most lowercase ones (and R = refresh all) are built-ins.
 keybindings:

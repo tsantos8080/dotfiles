@@ -177,6 +177,21 @@ Hints pick something on the screen with the keyboard: each match gets a letter, 
 
 `Ctrl+Shift+E`, `Ctrl+Shift+P` and the font size keys are kitty defaults. `Ctrl+Shift+Y` is set in `kitty.conf`.
 
+### gh-dash
+
+The config is in `dot_config/gh-dash/config.yml`. It opens with every repo, even inside a project folder; `t` filters to the current repo.
+
+| **Command** | **Description**                                                                 |
+|-------------|---------------------------------------------------------------------------------|
+| `a`         | Approves the PR. The comment field opens empty, and Enter approves with no comment. |
+| `I`         | Reviews the PR with Claude in a tmux window.                                    |
+| `S`         | Summarizes the PR with Claude.                                                  |
+| `J`         | Opens the Jira task from the branch name.                                       |
+| `E`         | Explains CI failures with Claude.                                               |
+| `F`         | Fixes review comments with Claude in a worktree.                                |
+
+Assign and unassign are unused, and gh-dash cannot unbind a built-in, so they sit on `f19` and `f20`. Each needs its own key: gh-dash merges keybindings by key, so two built-ins on the same key keep only the last one.
+
 ### GNOME extensions (GNOME 42)
 
 My own extensions are in `dot_local/share/gnome-shell/extensions/`. They declare only GNOME 42, so newer versions ignore them.

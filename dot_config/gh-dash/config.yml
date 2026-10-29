@@ -81,6 +81,10 @@ keybindings:
       builtin: assign
     - key: f20
       builtin: unassign
+    - key: O
+      name: review in nvim (octo)
+      # In the local clone when there is one, so gf opens the real file.
+      command: ~/.config/gh-dash/scripts/tmux-run.sh octo {{.PrNumber}} sh -c 'cd "{{.RepoPath}}" 2>/dev/null; exec nvim octo://{{.RepoName}}/pull/{{.PrNumber}}'
     - key: I
       name: review with Claude
       command: ~/.config/gh-dash/scripts/tmux-run.sh review {{.PrNumber}} ~/.config/gh-dash/scripts/review.sh {{.RepoPath}} {{.PrNumber}}

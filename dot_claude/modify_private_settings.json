@@ -14,7 +14,8 @@
 {{- /*
   Session state in the tmux window name, ◌ working and ? waiting for you
   (~/.claude/hooks/tmux-status.sh), and
-  a desktop notification when the terminal is not focused (notify.sh).
+  a desktop notification when Claude waits for you and the terminal is not
+  focused (notify.sh). No notification when it finishes: the panel icon covers it.
   chezmoi owns each event below: hooks added to them by hand are replaced on
   the next apply. Other events are kept.
   Spec: matcher, tmux-status argument, notify.sh argument ("" = none).
@@ -24,7 +25,7 @@
       "PostToolUse" (list "*" "◌" "")
       "PreToolUse" (list "AskUserQuestion" "'?'" "waiting")
       "Notification" (list "permission_prompt|elicitation_dialog" "'?'" "waiting")
-      "Stop" (list "" "clear" "done")
+      "Stop" (list "" "clear" "")
       "StopFailure" (list "" "clear" "")
       "SessionEnd" (list "" "reset" "") -}}
 {{-   $hooks := list (dict "type" "command" "command" (printf "~/.claude/hooks/tmux-status.sh %s" (index $spec 1))) -}}
@@ -38,5 +39,10 @@
 {{- $token := get . "sonarToken" -}}
 {{- if $token -}}
 {{-   $settings = setValueAtPath "env.SONAR_TOKEN" $token $settings -}}
+{{- end -}}
+{{- /* Pushover e-mail address for notify.sh, also from the local chezmoi config. */ -}}
+{{- $pushover := get . "pushoverEmail" -}}
+{{- if $pushover -}}
+{{-   $settings = setValueAtPath "env.PUSHOVER_EMAIL" $pushover $settings -}}
 {{- end -}}
 {{ toPrettyJson $settings }}

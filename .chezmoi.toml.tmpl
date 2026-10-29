@@ -1,5 +1,7 @@
 {{- $logseqDir := promptStringOnce . "logseqDir" "Diretório do grafo do Logseq" "~/Documents/Notes" -}}
 {{- $sonarToken := promptStringOnce . "sonarToken" "SONAR_TOKEN (Enter para pular)" "" -}}
+{{- $pushoverEmail := promptStringOnce . "pushoverEmail" "E-mail do Pushover, ...@pomail.net (Enter para pular)" "" -}}
 [data]
     logseqDir = {{ $logseqDir | quote }}
     sonarToken = {{ $sonarToken | quote }}
+    pushoverEmail = {{ $pushoverEmail | quote }}

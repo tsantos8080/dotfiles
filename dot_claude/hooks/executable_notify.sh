@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
-# Claude Code hook: desktop notification when Claude finishes or waits for
-# you, but only if the terminal running this session is not the focused
-# window (X11). Inside tmux, the terminal is the one with the tmux client.
-# Usage: notify.sh done|waiting   (hook input JSON on stdin)
+# Claude Code hook: notification when Claude waits for you, but only if the
+# terminal running this session is not the focused window (X11) or the screen
+# is locked. Inside tmux, the terminal is the one with the tmux client.
+# Desktop via notify-send; phone/watch via Pushover's e-mail gateway when
+# PUSHOVER_EMAIL is set (settings.json env, from the chezmoi config).
+# Usage: notify.sh waiting   (hook input JSON on stdin)
 set -uo pipefail
 input=$(cat)
 # CLAUDE_HOOKS_QUIET=1 skips it (e.g. for claude -p in scripts).
-[[ -n ${DISPLAY:-} && -z ${CLAUDE_HOOKS_QUIET:-} ]] || exit 0
+[[ -z ${CLAUDE_HOOKS_QUIET:-} ]] || exit 0
+pushover=
+[[ -n ${PUSHOVER_EMAIL:-} ]] && pushover=1
+[[ -n ${DISPLAY:-} || -n $pushover ]] || exit 0
+
+locked=
+gdbus call --session --dest org.gnome.ScreenSaver --object-path /org/gnome/ScreenSaver \
+  --method org.gnome.ScreenSaver.GetActive 2>/dev/null | grep -q true && locked=1
 
 # X window ids of the terminals showing this session.
 windows=()
@@ -21,7 +30,7 @@ elif [[ -n ${WINDOWID:-} ]]; then
 fi
 
 active=$(xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | grep -oE '0x[0-9a-f]+$')
-if [[ -n $active ]]; then
+if [[ -n $active && -z $locked ]]; then
   for id in "${windows[@]}"; do
     ((id == active)) && exit 0
   done
@@ -41,21 +50,21 @@ tail_text() {
 }
 
 case $1 in
-  done)
-    # Newer Claude Code versions send the reply; otherwise read the transcript.
-    reply=$(jq -r '.last_assistant_message // empty' <<<"$input")
-    transcript=$(jq -r '.transcript_path // empty' <<<"$input")
-    if [[ -z $reply && -f $transcript ]]; then
-      reply=$(tail -n 300 "$transcript" | jq -rs '[.[] | select(.type == "assistant")
-        | .message.content[]? | select(.type == "text") | .text] | last // empty' 2>/dev/null)
-    fi
-    notify-send -a "Claude Code" -i dialog-information \
-      "Claude finished — $where" "$(tail_text <<<"$reply")"
-    ;;
   waiting)
     # Permission prompts carry a message; AskUserQuestion carries the question.
     text=$(jq -r '.message // .tool_input.questions[0].question // empty' <<<"$input")
-    notify-send -a "Claude Code" -i dialog-question \
-      "Claude is waiting for you — $where" "$(tail_text <<<"$text")"
+    title="Claude is waiting for you — $where"
+    body=$(tail_text <<<"$text")
+    if [[ -n ${DISPLAY:-} ]]; then
+      notify-send -a "Claude Code" -i dialog-question "$title" "$body"
+    fi
+    if [[ -n $pushover ]]; then
+      # Straight to the pomail.net MX, like adp-cli; the subject is the title.
+      subject="=?UTF-8?B?$(printf '%s' "$title" | base64 -w0)?="
+      printf 'From: claude-code@example.com\r\nTo: %s\r\nSubject: %s\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n%s\r\n' \
+        "$PUSHOVER_EMAIL" "$subject" "${body:-$title}" |
+        curl -sS --max-time 15 smtp://pomail.pushover.net:25 \
+          --mail-from claude-code@example.com --mail-rcpt "$PUSHOVER_EMAIL" --upload-file - >/dev/null
+    fi
     ;;
 esac

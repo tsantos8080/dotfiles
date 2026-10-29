@@ -13,6 +13,8 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Settings
 vim.g.mapleader = " "
+-- Same key for buffer-local plugin maps (octo.nvim review: <space>ca, <space>vs...).
+vim.g.maplocalleader = " "
 vim.wo.relativenumber = true
 vim.wo.number = true
 vim.opt.shiftwidth = 4
